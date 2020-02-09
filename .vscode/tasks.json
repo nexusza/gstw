@@ -1,0 +1,46 @@
+{
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "g++ build active file",
+            "command": "/usr/bin/g++",
+            "args": [
+                "-g",
+                //"${file}",
+                "-I${workspaceFolder}/include",
+                "-I${workspaceFolder}/include/bins",
+                "-I${workspaceFolder}/include/elements",
+                "-I${workspaceFolder}/include/eventhandlers",
+                "-I${workspaceFolder}/include/messagehandlers",
+                "-I${workspaceFolder}/include/queries",
+                "-I${workspaceFolder}/include/features",
+                "-I${workspaceFolder}/include/pads",
+                "${workspaceFolder}/*.cpp",
+                "${workspaceFolder}/src/*.cpp",                
+                "${workspaceFolder}/src/bins/*.cpp",
+                "${workspaceFolder}/src/elements/*.cpp",
+                "${workspaceFolder}/src/eventhandlers/*.cpp",
+                "${workspaceFolder}/src/messagehandlers/*.cpp",
+                "${workspaceFolder}/src/features/*.cpp",
+                "${workspaceFolder}/src/queries/*.cpp",
+                "${workspaceFolder}/src/pads/*.cpp",
+                "-o",
+                //"${fileDirname}/${fileBasenameNoExtension}"
+                "${workspaceFolder}/main.out",
+                "`pkg-config",// --cflags --libs gstreamer-1.0`"
+                //"`pkg-config",
+                "--cflags",
+                "--libs",
+                "gstreamer-1.0`"
+            ],
+            "options": {
+                "cwd": "/usr/bin"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ],
+    "version": "2.0.0"
+}

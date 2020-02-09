@@ -1,0 +1,28 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/include/bins",
+                "${workspaceFolder}/include/elements",
+                "${workspaceFolder}/include/eventhandlers",
+                "${workspaceFolder}/include/messagehandlers",
+                "${workspaceFolder}/include/queries",
+                "${workspaceFolder}/include/features",
+                "${workspaceFolder}/include/pads",
+                "/usr/include",                
+                "/usr/include/gstreamer-1.0",
+                "/usr/include/glib-2.0",
+                "/usr/lib/x86_64-linux-gnu/glib-2.0/include"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "clang-x64"
+        }
+    ],
+    "version": 4
+}
