@@ -12,7 +12,7 @@
                 "${workspaceFolder}/include/queries",
                 "${workspaceFolder}/include/features",
                 "${workspaceFolder}/include/pads",
-                "/usr/include",                
+                "/usr/include",
                 "/usr/include/gstreamer-1.0",
                 "/usr/include/glib-2.0",
                 "/usr/lib/x86_64-linux-gnu/glib-2.0/include"
@@ -21,7 +21,8 @@
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "c11",
             "cppStandard": "c++17",
-            "intelliSenseMode": "clang-x64"
+            "intelliSenseMode": "clang-x64",
+            "configurationProvider": "vector-of-bool.cmake-tools"
         }
     ],
     "version": 4

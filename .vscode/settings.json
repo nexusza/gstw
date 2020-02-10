@@ -7,5 +7,6 @@
         "string": "cpp",
         "deque": "cpp",
         "vector": "cpp"
-    }
+    },
+    "cmake.cmakePath": "/usr/bin/cmake"
 }
