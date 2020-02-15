@@ -1,15 +1,20 @@
+#include "gst/gst.h"
 #include "Message.h"
 
 GSTWMessage::GSTWMessage(GstMessage* message)
 {
     this->_GstMessage = message;
-    gst_message_parse_state_changed (message, &this->OldState, &this->NewState, &this->PendingState);
 }
 
 GSTWMessage::~GSTWMessage()
 {
     gst_message_unref (this->_GstMessage);
-    this->_GstMessage = NULL;
+    this->_GstMessage = nullptr;
+}
+
+void GSTWMessage::LoadStateChangedStates()
+{
+    gst_message_parse_state_changed(this->_GstMessage, &this->OldState, &this->NewState, &this->PendingState);
 }
 
 gboolean GSTWMessage::IsForElement(GstElement* element)

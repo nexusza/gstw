@@ -1,19 +1,19 @@
 #include "gst/gst.h"
-#include "Element.h"
+#include "Pipeline.h"
 #include "ObjectProperties.h"
 
 #ifndef GSTWPLAYBIN_H
 #define GSTWPLAYBIN_H
 
-class GSTWPlayBin : public GSTWElement
+class GSTWPlayBin : public GSTWPipeline
 {
 private:
-    /* data */
+    GSTWObjectProperties* uri;
 public:
     GSTWPlayBin(string friendlyName);
     ~GSTWPlayBin();
 
-    GSTWObjectProperties* Uri;
+    GSTWObjectProperties* Uri();
 };
 
 #endif

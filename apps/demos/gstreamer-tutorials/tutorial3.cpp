@@ -6,13 +6,14 @@ int main (int argc, char *argv[])
     /* Initialize GStreamer */
     gst_init (&argc, &argv);
 
-    GSTWPipeline* pipeline = new GSTWPipeline("mypipeline");
-
+    GSTWCustomPipeline* pipeline = new GSTWCustomPipeline("mypipeline");
     GSTWUriDecodeBin* source = new GSTWUriDecodeBin("source");
     GSTWAudioConvert* convert = new GSTWAudioConvert("convert");
     GSTWAudioResample* resample = new GSTWAudioResample("resample");
     GSTWAutoAudioSink* sink = new GSTWAutoAudioSink("sink");
     GSTWPadLinkEventHandler* padAdded = new GSTWPadLinkEventHandler(convert);
+
+    pipeline->CreateElement();
 
     pipeline->AddElement(source);
     pipeline->AddElement(convert);
@@ -22,7 +23,7 @@ int main (int argc, char *argv[])
     convert->Link(resample);
     resample->Link(sink);
     
-    source->Uri->Set("https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm");
+    source->Uri()->Set("https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm");
 
     padAdded->ConnectToPadAddedSignal(source);
 

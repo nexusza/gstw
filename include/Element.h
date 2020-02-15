@@ -17,6 +17,7 @@ class GSTWElement
         string FriendlyName;
         GstElement* _GstElement;
 
+        virtual void CreateElement();
         void Link(GSTWElement *element);
         GSTWSinkPad* GetSinkPad();
 };

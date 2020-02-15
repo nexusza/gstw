@@ -1,9 +1,7 @@
 #include "Pipeline.h"
 
-GSTWPipeline::GSTWPipeline(string pipelineName)
+GSTWPipeline::GSTWPipeline(string elementName, string friendlyName) : GSTWBin(elementName, friendlyName)
 {
-    this->PipeLineName = pipelineName;
-    this->_GstElement = gst_pipeline_new(pipelineName.c_str());
 }
 
 GSTWPipeline::~GSTWPipeline()
@@ -15,11 +13,6 @@ GSTWPipeline::~GSTWPipeline()
 GSTWBus *GSTWPipeline::GetBus()
 {
     return new GSTWBus(gst_element_get_bus(this->_GstElement));
-}
-
-void GSTWPipeline::AddElement(GSTWElement *element)
-{
-    gst_bin_add(GST_BIN(this->_GstElement), element->_GstElement);
 }
 
 void GSTWPipeline::AddMessageHandler(GSTWMessageHandler *messageHandler)
@@ -46,33 +39,47 @@ void GSTWPipeline::WaitUntilEnd(guint64 timeout)
     do
     {
         GSTWMessage *message = bus->GetMessage(timeout);
+        int handlerSize = this->MessageHandlers.size();
 
         if (message != nullptr)
         {
-            for (int index = 0; index < this->MessageHandlers.size(); index++)
+            switch (GST_MESSAGE_TYPE(message->_GstMessage))
             {
-                GSTWMessageHandler *handler = this->MessageHandlers[index];
+            case GST_MESSAGE_STATE_CHANGED:
+            {
+                message->LoadStateChangedStates();
 
-                switch (GST_MESSAGE_TYPE(message->_GstMessage))
+                for (int index = 0; index < handlerSize; index++)
                 {
-                case GST_MESSAGE_STATE_CHANGED:
+                    GSTWMessageHandler *handler = this->MessageHandlers[index];
                     handler->HandleStateChanged(message);
-                    break;
-                case GST_MESSAGE_ERROR:
-                    handler->HandleError(message);
-                    terminate = true;
-                    break;
-                case GST_MESSAGE_EOS:
-                    handler->HandleEOS(message);
-                    terminate = true;
-                    break;
                 }
+
+                break;
             }
+            case GST_MESSAGE_ERROR:
+                for (int index = 0; index < handlerSize; index++)
+                {
+                    GSTWMessageHandler *handler = this->MessageHandlers[index];
+                    handler->HandleError(message);
+                }
+                terminate = true;
+                break;
+            case GST_MESSAGE_EOS:
+                for (int index = 0; index < handlerSize; index++)
+                {
+                    GSTWMessageHandler *handler = this->MessageHandlers[index];
+                    handler->HandleEOS(message);
+                }
+                terminate = true;
+                break;
+            }
+
             delete message;
         }
         else if (timeout != GST_CLOCK_TIME_NONE)
         {
-            for (int index = 0; index < this->MessageHandlers.size(); index++)
+            for (int index = 0; index < handlerSize; index++)
             {
                 GSTWMessageHandler *handler = this->MessageHandlers[index];
                 handler->HandleTimeout();

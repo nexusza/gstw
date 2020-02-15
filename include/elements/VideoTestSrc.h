@@ -7,12 +7,13 @@
 class GSTWVideoTestSrc : public GSTWElement
 {
 private:
-    /* data */
+    GSTWObjectProperties* pattern;
+
 public:
     GSTWVideoTestSrc(string friendlyName);
     ~GSTWVideoTestSrc();
 
-    GSTWObjectProperties* Pattern;
+    GSTWObjectProperties* Pattern();
 };
 
 #endif

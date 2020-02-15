@@ -6,16 +6,18 @@ int main(int argc, char *argv[])
     /* Initialize GStreamer */
     gst_init(&argc, &argv);
 
-    GSTWPipeline *pipeline = new GSTWPipeline("mypipeline");  
+    GSTWCustomPipeline *pipeline = new GSTWCustomPipeline("mypipeline");  
     GSTWVideoTestSrc *source = new GSTWVideoTestSrc("source");
     GSTWAutoVideoSink *sink = new GSTWAutoVideoSink("sink");
+    
+    pipeline->CreateElement();
 
     pipeline->AddElement(source);
     pipeline->AddElement(sink);
 
     source->Link(sink);
 
-    source->Pattern->Set(0);
+    source->Pattern()->Set(0);
 
     pipeline->Play();
 

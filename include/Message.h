@@ -8,9 +8,9 @@ class GSTWMessage
 private:
     
 public:
-    GSTWMessage(GstMessage* message);
+    GSTWMessage(GstMessage *message);
     ~GSTWMessage();
-    GstMessage* _GstMessage;
+    GstMessage *_GstMessage;
     GstState OldState;
     GstState NewState;
     GstState PendingState;
@@ -18,6 +18,7 @@ public:
     gboolean IsPlaying();
     gboolean IsPaused();
     gboolean IsInState(GstState state);
+    void LoadStateChangedStates();
 };
 
 #endif

@@ -2,10 +2,24 @@
 
 GSTWVideoTestSrc::GSTWVideoTestSrc(string friendlyName) : GSTWElement("videotestsrc", friendlyName)
 {
-    this->Pattern = new GSTWObjectProperties(this->_GstElement, "pattern");
+    
+}
+
+GSTWObjectProperties* GSTWVideoTestSrc::Pattern()
+{
+    if(this->pattern == nullptr)
+    {
+        this->pattern = new GSTWObjectProperties(this->_GstElement, "pattern");
+    }
+
+    return this->pattern;
 }
 
 GSTWVideoTestSrc::~GSTWVideoTestSrc()
 {
-    delete this->Pattern;
+    if(this->pattern != nullptr)
+    {
+        delete this->pattern;
+        this->pattern = nullptr;
+    }    
 }

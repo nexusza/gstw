@@ -1,7 +1,8 @@
 #include "gst/gst.h"
 
+#include "Element.h"
+#include "Bin.h"
 #include "Pipeline.h"
-
 #include "MessageHandler.h"
 #include "MessageLogger.h"
 #include "PadLinkEventHandler.h"
@@ -9,6 +10,7 @@
 #include "SeekQuery.h"
 
 #include "PlayBin.h"
+#include "CustomPipeline.h"
 #include "UriDecodeBin.h"
 #include "VideoTestSrc.h"
 #include "AutoVideoSink.h"

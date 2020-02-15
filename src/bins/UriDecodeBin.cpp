@@ -1,11 +1,25 @@
 #include "UriDecodeBin.h"
 
-GSTWUriDecodeBin::GSTWUriDecodeBin(string friendlyName) : GSTWElement("uridecodebin", friendlyName)
+GSTWUriDecodeBin::GSTWUriDecodeBin(string friendlyName) : GSTWBin("uridecodebin", friendlyName)
 {
-    this->Uri = new GSTWObjectProperties(this->_GstElement, "uri");
+    
+}
+
+GSTWObjectProperties* GSTWUriDecodeBin::Uri()
+{
+    if(this->uri == nullptr)
+    {
+        this->uri = new GSTWObjectProperties(this->_GstElement, "uri");
+    }
+
+    return this->uri;
 }
 
 GSTWUriDecodeBin::~GSTWUriDecodeBin()
 {
-    delete this->Uri;
+    if(this->uri != nullptr)
+    {
+        delete this->uri;
+        this->uri = nullptr;
+    }
 }
