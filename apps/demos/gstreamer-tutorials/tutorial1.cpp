@@ -9,12 +9,16 @@ int main(int argc, char *argv[])
     GSTWPlayBin *playbin = new GSTWPlayBin("mybin");
 
     playbin->CreateElement();
-    
+
     playbin->Uri()->Set("https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm");
 
     playbin->Play();
 
-    playbin->WaitUntilEnd();
+    GSTWBus *bus = playbin->GetBus();
+
+    bus->BeginWait();
+
+    delete bus;
 
     playbin->Stop();
 

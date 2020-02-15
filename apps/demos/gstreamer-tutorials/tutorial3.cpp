@@ -29,7 +29,11 @@ int main (int argc, char *argv[])
 
     pipeline->Play();
 
-    pipeline->WaitUntilEnd();
+    GSTWBus *bus = pipeline->GetBus();
+
+    bus->BeginWait();
+
+    delete bus;
 
     pipeline->Stop();
 

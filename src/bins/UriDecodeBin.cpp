@@ -2,7 +2,7 @@
 
 GSTWUriDecodeBin::GSTWUriDecodeBin(string friendlyName) : GSTWBin("uridecodebin", friendlyName)
 {
-    
+    this->uri = nullptr;
 }
 
 GSTWObjectProperties* GSTWUriDecodeBin::Uri()

@@ -2,7 +2,7 @@
 
 GSTWVideoTestSrc::GSTWVideoTestSrc(string friendlyName) : GSTWElement("videotestsrc", friendlyName)
 {
-    
+    this->pattern = nullptr;
 }
 
 GSTWObjectProperties* GSTWVideoTestSrc::Pattern()

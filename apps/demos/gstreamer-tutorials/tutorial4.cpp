@@ -1,19 +1,19 @@
 #include <iostream>
 #include "All.h"
 
-class MySeeker : public GSTWMessageHandler
+class MySeeker : public GSTWBusMessageHandler
 {
 private:
     /* data */
 public:
-    MySeeker(GSTWElement* element);
+    MySeeker(GSTWElement *element);
     ~MySeeker();
 
-    void OnHandleDurationChange(GSTWMessage *message);
-    void OnHandleStateChanged(GSTWMessage *message);
+    void OnHandleDurationChange(GstBus *_gstBus, GSTWMessage *message);
+    void OnHandleStateChanged(GstBus *_gstBus, GSTWMessage *message);
     void OnHandleTimeout();
 
-    GSTWElement* Element;
+    GSTWElement *Element;
     gboolean SeekDone;
     gboolean CanSeek;
     gint64 Duration;
@@ -21,7 +21,7 @@ public:
     gint64 End;
 };
 
-MySeeker::MySeeker(GSTWElement *element) : GSTWMessageHandler()
+MySeeker::MySeeker(GSTWElement *element) : GSTWBusMessageHandler()
 {
     this->Element = element;
     this->CanSeek = false;
@@ -32,12 +32,12 @@ MySeeker::~MySeeker()
 {
 }
 
-void MySeeker::OnHandleDurationChange(GSTWMessage *message)
+void MySeeker::OnHandleDurationChange(GstBus *_gstBus, GSTWMessage *message)
 {
     this->CanSeek = false;
 }
 
-void MySeeker::OnHandleStateChanged(GSTWMessage *message)
+void MySeeker::OnHandleStateChanged(GstBus *_gstBus, GSTWMessage *message)
 {
     if (message->IsForElement(this->Element->_GstElement))
     {
@@ -80,29 +80,33 @@ void MySeeker::OnHandleTimeout()
     }
 }
 
-int main (int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     /* Initialize GStreamer */
-    gst_init (&argc, &argv);
+    gst_init(&argc, &argv);
 
-    GSTWPlayBin* pipeline = new GSTWPlayBin("source");
-    
+    GSTWPlayBin *pipeline = new GSTWPlayBin("source");
+
     pipeline->CreateElement();
-    
-    GSTWMessageLogger* messageLogger = new GSTWMessageLogger(pipeline);
 
-    MySeeker* seeker = new MySeeker(pipeline);
+    GSTWMessageLogger *messageLogger = new GSTWMessageLogger(pipeline);
 
-    pipeline->AddMessageHandler(messageLogger);
-    
-    pipeline->AddMessageHandler(seeker);
-    
+    MySeeker *seeker = new MySeeker(pipeline);
+
+    GSTWBus *bus = pipeline->GetBus();
+
+    bus->AddMessageHandler(messageLogger);
+
+    bus->AddMessageHandler(seeker);
+
     pipeline->Uri()->Set("https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm");
 
     pipeline->Play();
 
-    pipeline->WaitUntilEnd(100);
+    bus->BeginWait(100);
 
+    delete bus;
+    
     pipeline->Stop();
 
     delete messageLogger;

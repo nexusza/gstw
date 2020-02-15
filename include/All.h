@@ -2,8 +2,8 @@
 
 #include "Element.h"
 #include "Bin.h"
+#include "Bus.h"
 #include "Pipeline.h"
-#include "MessageHandler.h"
 #include "MessageLogger.h"
 #include "PadLinkEventHandler.h"
 

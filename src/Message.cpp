@@ -1,14 +1,19 @@
 #include "gst/gst.h"
 #include "Message.h"
 
-GSTWMessage::GSTWMessage(GstMessage* message)
+GSTWMessage::GSTWMessage(GstMessage* message, bool unrefMessage)
 {
+    this->unrefMessage = unrefMessage;
     this->_GstMessage = message;
 }
 
 GSTWMessage::~GSTWMessage()
 {
-    gst_message_unref (this->_GstMessage);
+    if(this->unrefMessage && this->_GstMessage != nullptr)
+    {
+        gst_message_unref (this->_GstMessage);
+    }
+    
     this->_GstMessage = nullptr;
 }
 

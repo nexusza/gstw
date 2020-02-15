@@ -6,9 +6,9 @@
 class GSTWMessage
 {
 private:
-    
+    bool unrefMessage;
 public:
-    GSTWMessage(GstMessage *message);
+    GSTWMessage(GstMessage *message, bool unrefMessage);
     ~GSTWMessage();
     GstMessage *_GstMessage;
     GstState OldState;

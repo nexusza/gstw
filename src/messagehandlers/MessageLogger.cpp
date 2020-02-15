@@ -14,7 +14,7 @@ GSTWMessageLogger::~GSTWMessageLogger()
 {
 }
 
-void GSTWMessageLogger::OnHandleStateChanged(GSTWMessage *message)
+void GSTWMessageLogger::OnHandleStateChanged(GstBus *_gstBus, GSTWMessage *message)
 {
     if (this->Element == nullptr || message->IsForElement(this->Element->_GstElement))
     {
@@ -23,16 +23,16 @@ void GSTWMessageLogger::OnHandleStateChanged(GSTWMessage *message)
     }
 }
 
-void GSTWMessageLogger::OnHandleTimeout(GSTWMessage *message)
+void GSTWMessageLogger::OnHandleTimeout(GstBus *_gstBus, GSTWMessage *message)
 {
 }
 
-void GSTWMessageLogger::OnHandleEOS(GSTWMessage *message)
+void GSTWMessageLogger::OnHandleEOS(GstBus *_gstBus, GSTWMessage *message)
 {
     g_print("End-Of-Stream reached.\n");
 }
 
-void GSTWMessageLogger::OnHandleError(GSTWMessage *message)
+void GSTWMessageLogger::OnHandleError(GstBus *_gstBus, GSTWMessage *message)
 {
     GError *err;
     gchar *debug_info;

@@ -1,19 +1,19 @@
 #include "Element.h"
 #include "Message.h"
-#include "MessageHandler.h"
+#include "Bus.h"
 
 #ifndef GSTWMESSAGELOGGER_H
 #define GSTWMESSAGELOGGER_H
 
-class GSTWMessageLogger : public GSTWMessageHandler
+class GSTWMessageLogger : public GSTWBusMessageHandler
 {
 private:
     /* data */
 protected:
-    void OnHandleStateChanged(GSTWMessage *message);
-    void OnHandleTimeout(GSTWMessage *message);
-    void OnHandleEOS(GSTWMessage *message);
-    void OnHandleError(GSTWMessage *message);
+    void OnHandleStateChanged(GstBus *_gstBus, GSTWMessage *message);
+    void OnHandleTimeout(GstBus *_gstBus, GSTWMessage *message);
+    void OnHandleEOS(GstBus *_gstBus, GSTWMessage *message);
+    void OnHandleError(GstBus *_gstBus, GSTWMessage *message);
 public:
     GSTWMessageLogger();
     GSTWMessageLogger(GSTWElement *element);
