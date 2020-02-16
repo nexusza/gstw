@@ -10,9 +10,9 @@ int main(int argc, char *argv[])
 
     playbin->CreateElement();
 
-    playbin->Uri()->Set("https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm");
+    playbin->SetUri("https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm");
 
-    playbin->Play();
+    playbin->SetToPlayingState();
 
     GSTWBus *bus = playbin->GetBus();
 
@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
 
     delete bus;
 
-    playbin->Stop();
+    playbin->SetToNullState();
 
     delete playbin;
 

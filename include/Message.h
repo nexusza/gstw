@@ -1,4 +1,7 @@
 #include "gst/gst.h"
+#include <string>
+
+using namespace std;
 
 #ifndef GSTWMESSAGE_H
 #define GSTWMESSAGE_H
@@ -19,6 +22,7 @@ public:
     gboolean IsPaused();
     gboolean IsInState(GstState state);
     void LoadStateChangedStates();
+    string GetMessageName();
 };
 
 #endif

@@ -17,8 +17,10 @@ public:
     GSTWPipeline(string elementName, string friendlyName);
     ~GSTWPipeline();
     
-    void Play();
-    void Stop();
+    void SetToReadyState();
+    void SetToPlayingState();
+    void SetToPausedState();
+    void SetToNullState();
     GSTWBus* GetBus();
 };
 

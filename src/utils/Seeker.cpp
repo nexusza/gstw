@@ -14,5 +14,5 @@ GSTWSeeker::~GSTWSeeker()
 void GSTWSeeker::SeekSimple(int seconds)
 {
     gst_element_seek_simple(this->Element->_GstElement, GST_FORMAT_TIME,
-                            (GstSeekFlags)(GstSeekFlags::GST_SEEK_FLAG_FLUSH | GstSeekFlags::GST_SEEK_FLAG_KEY_UNIT), 30 * GST_SECOND);
+                            (GstSeekFlags)(GstSeekFlags::GST_SEEK_FLAG_FLUSH | GstSeekFlags::GST_SEEK_FLAG_KEY_UNIT), seconds * GST_SECOND);
 }

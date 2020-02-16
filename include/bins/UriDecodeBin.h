@@ -7,13 +7,11 @@
 
 class GSTWUriDecodeBin : public GSTWBin
 {
-private:
-    GSTWObjectProperties* uri;
 public:
     GSTWUriDecodeBin(string friendlyName);
     ~GSTWUriDecodeBin();
 
-    GSTWObjectProperties* Uri();
+    void SetUri(string uri);
 };
 
 #endif

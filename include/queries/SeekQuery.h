@@ -11,8 +11,9 @@ public:
     GSTWSeekQuery();
     ~GSTWSeekQuery();
 
-    gboolean QuerySeekRange(GstElement* _gstElemenet, gint64* start, gint64* end, gint64* durection);
-    gint64 QueryCurrent(GstElement* _gstElemenet);
+    gboolean QueryStartAndEnd(GstElement *_gstElemenet, gint64 *start, gint64 *end);
+    gboolean QueryDuration(GstElement *_gstElemenet, gint64 *duration);
+    gboolean QueryCurrent(GstElement *_gstElement, gint64 *current);
 };
 
 #endif

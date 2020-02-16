@@ -21,6 +21,13 @@ void GSTWElement::CreateElement()
     }
 }
 
+void GSTWElement::SendApplicationMessage(string messageName)
+{
+    gst_element_post_message(this->_GstElement,
+                             gst_message_new_application(GST_OBJECT(this->_GstElement),
+                                                         gst_structure_new_empty(messageName.c_str())));
+}
+
 void GSTWElement::Link(GSTWElement *element)
 {
     gst_element_link(this->_GstElement, element->_GstElement);

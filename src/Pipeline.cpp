@@ -16,12 +16,22 @@ GSTWBus *GSTWPipeline::GetBus()
     return new GSTWBus(gst_element_get_bus(this->_GstElement));
 }
 
-void GSTWPipeline::Play()
+void GSTWPipeline::SetToReadyState()
+{
+    gst_element_set_state(this->_GstElement, GST_STATE_READY);
+}
+
+void GSTWPipeline::SetToPlayingState()
 {
     gst_element_set_state(this->_GstElement, GST_STATE_PLAYING);
 }
 
-void GSTWPipeline::Stop()
+void GSTWPipeline::SetToPausedState()
+{
+    gst_element_set_state(this->_GstElement, GST_STATE_PAUSED);
+}
+
+void GSTWPipeline::SetToNullState()
 {
     gst_element_set_state(this->_GstElement, GST_STATE_NULL);
 }

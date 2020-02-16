@@ -20,6 +20,7 @@ class GSTWElement
         virtual void CreateElement();
         void Link(GSTWElement *element);
         GSTWSinkPad* GetSinkPad();
+        void SendApplicationMessage(string messageName);
 };
 
 #endif

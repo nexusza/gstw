@@ -17,9 +17,9 @@ int main(int argc, char *argv[])
 
     source->Link(sink);
 
-    source->Pattern()->Set(0);
+    source->SetPattern(0);
 
-    pipeline->Play();
+    pipeline->SetToPlayingState();
 
     GSTWBus *bus = pipeline->GetBus();
 
@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
 
     delete bus;
     
-    pipeline->Stop();
+    pipeline->SetToNullState();
 
     delete source;
     delete sink;

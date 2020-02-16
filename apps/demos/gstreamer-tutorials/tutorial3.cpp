@@ -23,11 +23,11 @@ int main (int argc, char *argv[])
     convert->Link(resample);
     resample->Link(sink);
     
-    source->Uri()->Set("https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm");
+    source->SetUri("https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm");
 
     padAdded->ConnectToPadAddedSignal(source);
 
-    pipeline->Play();
+    pipeline->SetToPlayingState();
 
     GSTWBus *bus = pipeline->GetBus();
 
@@ -35,7 +35,7 @@ int main (int argc, char *argv[])
 
     delete bus;
 
-    pipeline->Stop();
+    pipeline->SetToNullState();
 
     delete source;
     delete convert;

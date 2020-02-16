@@ -44,7 +44,12 @@ void MySeeker::OnHandleStateChanged(GstBus *_gstBus, GSTWMessage *message)
         if (message->IsPlaying())
         {
             GSTWSeekQuery query;
-            this->CanSeek = query.QuerySeekRange(this->Element->_GstElement, &this->Start, &this->End, &this->Duration);
+            this->CanSeek = query.QueryStartAndEnd(this->Element->_GstElement, &this->Start, &this->End);
+
+            if(this->CanSeek)
+            {
+                query.QueryDuration(this->Element->_GstElement, &this->Duration);
+            }
         }
         else
         {
@@ -61,8 +66,8 @@ void MySeeker::OnHandleTimeout()
     }
 
     GSTWSeekQuery query;
-
-    gint64 current = query.QueryCurrent(this->Element->_GstElement);
+    gint64 current;
+    query.QueryCurrent(this->Element->_GstElement, &current);
 
     /* Print current position and total duration */
     g_print("Position %" GST_TIME_FORMAT " / %" GST_TIME_FORMAT "\r",
@@ -99,15 +104,15 @@ int main(int argc, char *argv[])
 
     bus->AddMessageHandler(seeker);
 
-    pipeline->Uri()->Set("https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm");
+    pipeline->SetUri("https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm");
 
-    pipeline->Play();
+    pipeline->SetToPlayingState();
 
     bus->BeginWait(100);
 
     delete bus;
     
-    pipeline->Stop();
+    pipeline->SetToNullState();
 
     delete messageLogger;
     delete seeker;

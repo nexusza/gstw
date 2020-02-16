@@ -115,10 +115,10 @@ void GSTWBus::HandleDurationChange(GSTWMessage *message)
 void GSTWBus::BeginWatch()
 {
     gst_bus_add_signal_watch(this->_GstBus);
-    //g_signal_connect(G_OBJECT(this->_GstBus), "message::error", (GCallback)bus_error, this);
-    //g_signal_connect(G_OBJECT(this->_GstBus), "message::eos", (GCallback)bus_eos, this);
+    g_signal_connect(G_OBJECT(this->_GstBus), "message::error", (GCallback)bus_error, this);
+    g_signal_connect(G_OBJECT(this->_GstBus), "message::eos", (GCallback)bus_eos, this);
     g_signal_connect(G_OBJECT(this->_GstBus), "message::state-changed", (GCallback)bus_state_changed, this);
-    //g_signal_connect(G_OBJECT(this->_GstBus), "message::application", (GCallback)bus_application, this);
+    g_signal_connect(G_OBJECT(this->_GstBus), "message::application", (GCallback)bus_application, this);
 }
 
 void GSTWBus::BeginWait()
