@@ -1,4 +1,5 @@
 #include "gst/gst.h"
+#include "Element.h"
 #include <string>
 
 using namespace std;
@@ -17,7 +18,7 @@ public:
     GstState OldState;
     GstState NewState;
     GstState PendingState;
-    gboolean IsForElement(GstElement* element);
+    gboolean IsForElement(GSTWElement* element);
     gboolean IsPlaying();
     gboolean IsPaused();
     gboolean IsInState(GstState state);

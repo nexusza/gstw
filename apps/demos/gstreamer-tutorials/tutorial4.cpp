@@ -39,7 +39,7 @@ void MySeeker::OnHandleDurationChange(GstBus *_gstBus, GSTWMessage *message)
 
 void MySeeker::OnHandleStateChanged(GstBus *_gstBus, GSTWMessage *message)
 {
-    if (message->IsForElement(this->Element->_GstElement))
+    if (message->IsForElement(this->Element))
     {
         if (message->IsPlaying())
         {

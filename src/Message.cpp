@@ -27,9 +27,9 @@ string GSTWMessage::GetMessageName()
     return gst_structure_get_name (gst_message_get_structure (this->_GstMessage));
 }
 
-gboolean GSTWMessage::IsForElement(GstElement* element)
+gboolean GSTWMessage::IsForElement(GSTWElement* element)
 {
-    return GST_MESSAGE_SRC (this->_GstMessage) == GST_OBJECT (element);
+    return GST_MESSAGE_SRC (this->_GstMessage) == GST_OBJECT (element->_GstElement);
 }
 
 gboolean GSTWMessage::IsInState(GstState state)

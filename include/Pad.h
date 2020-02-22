@@ -1,5 +1,6 @@
 #include "gst/gst.h"
 #include <string>
+#include "Capabilities.h"
 
 using std::string;
 
@@ -13,7 +14,9 @@ private:
 public:
     GSTWPad(GstElement* _gstElement, string padName);
     ~GSTWPad();
+    string PadName;
     GstPad* _GstPad;
+    bool GetCapabilities(GSTWCapabilities **capabilities);
     void LinkSourcePad(GstElement* _gstSourceElement, GstPad* _gstSourcePad);
 };
 

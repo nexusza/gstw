@@ -16,7 +16,7 @@ GSTWMessageLogger::~GSTWMessageLogger()
 
 void GSTWMessageLogger::OnHandleStateChanged(GstBus *_gstBus, GSTWMessage *message)
 {
-    if (this->Element == nullptr || message->IsForElement(this->Element->_GstElement))
+    if (this->Element == nullptr || message->IsForElement(this->Element))
     {
         g_print("Pipeline state changed from %s to %s:\n",
                 gst_element_state_get_name(message->OldState), gst_element_state_get_name(message->NewState));

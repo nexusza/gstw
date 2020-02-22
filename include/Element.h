@@ -1,6 +1,8 @@
 #include "gst/gst.h"
 #include "SinkPad.h"
+#include "ElementFactory.h"
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -9,19 +11,18 @@ using namespace std;
 
 class GSTWElement
 {
-    public:
-        GSTWElement(string elementName, string friendlyName);
-        ~GSTWElement();
-        
-        string ElementName;
-        string FriendlyName;
-        GstElement* _GstElement;
+public:
+    GSTWElement(string elementName, string friendlyName);
+    ~GSTWElement();
 
-        virtual void CreateElement();
-        void Link(GSTWElement *element);
-        GSTWSinkPad* GetSinkPad();
-        void SendApplicationMessage(string messageName);
+    string FriendlyName;
+    GstElement *_GstElement;
+    GSTWElementFactory *Factory;
+    virtual void CreateElement();
+    void Link(GSTWElement *element);
+    GSTWSinkPad *GetSinkPad();
+    void SendApplicationMessage(string messageName);
+    bool GetStaticPadTemplates(GSTWStaticPadTemplate** staticTemplate);
 };
 
 #endif
-

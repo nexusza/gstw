@@ -17,5 +17,6 @@
 #include "AudioConvert.h"
 #include "AudioResample.h"
 #include "AutoAudioSink.h"
+#include "AudioTestSrc.h"
 
 #include "Seeker.h"

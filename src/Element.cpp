@@ -3,13 +3,15 @@
 
 GSTWElement::GSTWElement(string elementName, string friendlyName)
 {
-    this->ElementName = elementName;
     this->FriendlyName = friendlyName;
     this->_GstElement = nullptr;
+    this->Factory = new GSTWElementFactory(elementName);
 }
 
 GSTWElement::~GSTWElement()
 {
+    delete this->Factory;
+    this->Factory = nullptr;
     this->_GstElement = nullptr;
 }
 
@@ -17,7 +19,7 @@ void GSTWElement::CreateElement()
 {
     if (this->_GstElement == nullptr)
     {
-        this->_GstElement = gst_element_factory_make(this->ElementName.c_str(), this->FriendlyName.c_str());
+        this->_GstElement = this->Factory->CreateElement(this->FriendlyName);
     }
 }
 
@@ -36,4 +38,9 @@ void GSTWElement::Link(GSTWElement *element)
 GSTWSinkPad *GSTWElement::GetSinkPad()
 {
     return new GSTWSinkPad(this->_GstElement);
+}
+
+bool GSTWElement::GetStaticPadTemplates(GSTWStaticPadTemplate **staticTemplate)
+{
+    return this->Factory->GetStaticPadTemplates(staticTemplate);
 }

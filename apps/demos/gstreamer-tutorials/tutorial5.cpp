@@ -35,7 +35,7 @@ public:
 
     void OnHandleStateChanged(GstBus *_gstBus, GSTWMessage *message)
     {
-        if (message->IsForElement(this->playbin->_GstElement))
+        if (message->IsForElement(this->playbin))
         {
             this->state = message->NewState;
 
