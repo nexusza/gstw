@@ -7,3 +7,8 @@ GSTWAudioTestSrc::GSTWAudioTestSrc(string friendlyName) : GSTWElement("audiotest
 GSTWAudioTestSrc::~GSTWAudioTestSrc()
 {
 }
+
+void GSTWAudioTestSrc::Freq(float value)
+{
+    g_object_set (this->_GstElement, "freq", value, NULL);
+}

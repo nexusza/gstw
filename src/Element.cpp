@@ -30,14 +30,17 @@ void GSTWElement::SendApplicationMessage(string messageName)
                                                          gst_structure_new_empty(messageName.c_str())));
 }
 
-void GSTWElement::Link(GSTWElement *element)
+void GSTWElement::AutoLinkElement(GSTWElement *element)
 {
-    gst_element_link(this->_GstElement, element->_GstElement);
+    if (gst_element_link(this->_GstElement, element->_GstElement) != TRUE)
+    {
+        g_printerr("Elements could not be linked.\n");
+    }
 }
 
-GSTWSinkPad *GSTWElement::GetSinkPad()
+GSTWStaticPad *GSTWElement::GetSinkPad()
 {
-    return new GSTWSinkPad(this->_GstElement);
+    return new GSTWStaticPad(this->_GstElement, "sink");
 }
 
 bool GSTWElement::GetStaticPadTemplates(GSTWStaticPadTemplate **staticTemplate)

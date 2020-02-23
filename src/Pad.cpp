@@ -1,15 +1,18 @@
 #include "Pad.h"
 
-GSTWPad::GSTWPad(GstElement *_gstElement, string padName)
+GSTWPad::GSTWPad(string padName)
 {
     this->PadName = padName;
-    this->_GstPad = gst_element_get_static_pad(_gstElement, padName.c_str());
+    this->_GstPad = nullptr;
 }
 
 GSTWPad::~GSTWPad()
 {
-    gst_object_unref(this->_GstPad);
-    this->_GstPad = nullptr;
+    if (this->_GstPad != nullptr)
+    {
+        gst_object_unref(this->_GstPad);
+        this->_GstPad = nullptr;
+    }
 }
 
 bool GSTWPad::GetCapabilities(GSTWCapabilities **capabilities)
@@ -29,6 +32,14 @@ bool GSTWPad::GetCapabilities(GSTWCapabilities **capabilities)
     }
 
     return false;
+}
+
+void GSTWPad::LinkPad(GSTWPad *pad)
+{
+    if (gst_pad_link(this->_GstPad, pad->_GstPad) != GST_PAD_LINK_OK)
+    {
+        g_printerr("Pad could not be linked.\n");
+    }
 }
 
 void GSTWPad::LinkSourcePad(GstElement *_gstSourceElement, GstPad *_gstSourcePad)

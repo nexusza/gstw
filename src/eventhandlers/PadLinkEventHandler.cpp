@@ -20,7 +20,7 @@ void GSTWPadLinkEventHandler::ConnectToPadAddedSignal(GSTWElement *source)
 
 static void gstw_pad_added_event (GstElement *src, GstPad *new_pad, GSTWPadLinkEventHandler *data)
 {
-    GSTWSinkPad* sinkPad = data->Target->GetSinkPad();
+    GSTWStaticPad* sinkPad = data->Target->GetSinkPad();
 
     sinkPad->LinkSourcePad(src, new_pad);
 

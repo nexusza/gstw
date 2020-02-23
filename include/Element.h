@@ -1,5 +1,5 @@
 #include "gst/gst.h"
-#include "SinkPad.h"
+#include "StaticPad.h"
 #include "ElementFactory.h"
 #include <string>
 #include <vector>
@@ -19,8 +19,8 @@ public:
     GstElement *_GstElement;
     GSTWElementFactory *Factory;
     virtual void CreateElement();
-    void Link(GSTWElement *element);
-    GSTWSinkPad *GetSinkPad();
+    void AutoLinkElement(GSTWElement *element);
+    GSTWStaticPad *GetSinkPad();
     void SendApplicationMessage(string messageName);
     bool GetStaticPadTemplates(GSTWStaticPadTemplate** staticTemplate);
 };

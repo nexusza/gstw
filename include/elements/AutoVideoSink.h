@@ -1,5 +1,4 @@
 #include "Element.h"
-#include "ObjectProperties.h"
 
 #ifndef GSTWAUTOVIDEOSINK_H
 #define GSTWAUTOVIDEOSINK_H

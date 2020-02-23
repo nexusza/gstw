@@ -22,7 +22,7 @@ public:
     {
         if (message->IsForElement(this->element))
         {
-            GSTWSinkPad *sinkPad = this->element->GetSinkPad();
+            GSTWStaticPad *sinkPad = this->element->GetSinkPad();
 
             print_pad_capabilities(sinkPad);
 
@@ -145,7 +145,7 @@ int main(int argc, char *argv[])
     pipeline->AddElement(audiotest);
     pipeline->AddElement(audiosink);
 
-    audiotest->Link(audiosink);
+    audiotest->AutoLinkElement(audiosink);
 
     pipeline->SetToPlayingState();
 

@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     pipeline->AddElement(source);
     pipeline->AddElement(sink);
 
-    source->Link(sink);
+    source->AutoLinkElement(sink);
 
     source->SetPattern(0);
 

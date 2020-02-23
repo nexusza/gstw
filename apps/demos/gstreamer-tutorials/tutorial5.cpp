@@ -153,7 +153,9 @@ static void create_ui(MyCustomData *data)
     g_signal_connect(G_OBJECT(main_window), "delete-event", G_CALLBACK(delete_event_cb), data);
 
     video_window = gtk_drawing_area_new();
+    G_GNUC_BEGIN_IGNORE_DEPRECATIONS
     gtk_widget_set_double_buffered(video_window, FALSE);
+    G_GNUC_BEGIN_IGNORE_DEPRECATIONS
     g_signal_connect(video_window, "realize", G_CALLBACK(realize_cb), data);
     g_signal_connect(video_window, "draw", G_CALLBACK(draw_cb), data);
 

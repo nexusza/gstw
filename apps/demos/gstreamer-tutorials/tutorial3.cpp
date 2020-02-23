@@ -20,8 +20,8 @@ int main (int argc, char *argv[])
     pipeline->AddElement(resample);
     pipeline->AddElement(sink);
 
-    convert->Link(resample);
-    resample->Link(sink);
+    convert->AutoLinkElement(resample);
+    resample->AutoLinkElement(sink);
     
     source->SetUri("https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm");
 

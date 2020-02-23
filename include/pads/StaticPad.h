@@ -4,13 +4,13 @@
 #ifndef GSTWSINKPAD_H
 #define GSTWSINKPAD_H
 
-class GSTWSinkPad : public GSTWPad
+class GSTWStaticPad : public GSTWPad
 {
 private:
     /* data */
 public:
-    GSTWSinkPad(GstElement* _gstElement);
-    ~GSTWSinkPad();
+    GSTWStaticPad(GstElement* _gstElement, string padName);
+    ~GSTWStaticPad();
 };
 
 #endif
