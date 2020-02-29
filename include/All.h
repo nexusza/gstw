@@ -36,5 +36,7 @@
 
 #include "WaveScope.h"
 
+#include "Discoverer.h"
+
 #include "Seeker.h"
 #include "SeekQuery.h"
