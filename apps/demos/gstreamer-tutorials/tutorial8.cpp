@@ -190,11 +190,16 @@ int main(int argc, char *argv[])
 
     bus->BeginWatch();
 
+    //string file = "result.dot";
+    //GST_DEBUG_BIN_TO_DOT_FILE((GstBin*)pipeline->_GstElement, GST_DEBUG_GRAPH_SHOW_ALL, file.c_str());
+
     pipeline->SetToPlayingState();
 
     data.main_loop = g_main_loop_new(NULL, FALSE);
 
     g_main_loop_run(data.main_loop);
+
+
 
     pipeline->SetToNullState();
 

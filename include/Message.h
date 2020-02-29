@@ -24,6 +24,8 @@ public:
     gboolean IsInState(GstState state);
     void LoadStateChangedStates();
     string GetMessageName();
+
+    gint ParseBufferingPercentage();
 };
 
 #endif

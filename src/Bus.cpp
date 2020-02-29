@@ -112,6 +112,28 @@ void GSTWBus::HandleDurationChange(GSTWMessage *message)
     }
 }
 
+void GSTWBus::HandleBuffering(GSTWMessage *message)
+{
+    int handlerSize = this->Handlers.size();
+
+    for (int index = 0; index < handlerSize; index++)
+    {
+        GSTWBusMessageHandler *handler = this->Handlers[index];
+        handler->HandleBuffering(this->_GstBus, message);
+    }
+}
+
+void GSTWBus::HandleClockLost(GSTWMessage *message)
+{
+    int handlerSize = this->Handlers.size();
+
+    for (int index = 0; index < handlerSize; index++)
+    {
+        GSTWBusMessageHandler *handler = this->Handlers[index];
+        handler->HandleClockLost(this->_GstBus, message);
+    }
+}
+
 void GSTWBus::BeginWatch()
 {
     gst_bus_add_signal_watch(this->_GstBus);
@@ -119,6 +141,8 @@ void GSTWBus::BeginWatch()
     g_signal_connect(G_OBJECT(this->_GstBus), "message::eos", (GCallback)bus_eos, this);
     g_signal_connect(G_OBJECT(this->_GstBus), "message::state-changed", (GCallback)bus_state_changed, this);
     g_signal_connect(G_OBJECT(this->_GstBus), "message::application", (GCallback)bus_application, this);
+    g_signal_connect(G_OBJECT(this->_GstBus), "message::buffering", (GCallback)bus_buffering, this);
+    g_signal_connect(G_OBJECT(this->_GstBus), "message::clock-lost", (GCallback)bus_clocklost, this);
 }
 
 void GSTWBus::BeginWait()
@@ -149,13 +173,27 @@ void GSTWBus::BeginWait(guint64 timeout)
                 break;
             }
             case GST_MESSAGE_ERROR:
+            {
                 this->HandleError(message);
                 terminate = true;
                 break;
+            }
             case GST_MESSAGE_EOS:
+            {
                 this->HandleEOS(message);
                 terminate = true;
                 break;
+            }
+            case GST_MESSAGE_CLOCK_LOST:
+            {
+                this->HandleClockLost(message);
+                break;
+            }
+            case GST_MESSAGE_BUFFERING:
+            {
+                this->HandleBuffering(message);
+                break;
+            }
             }
 
             delete message;
@@ -166,6 +204,24 @@ void GSTWBus::BeginWait(guint64 timeout)
         }
 
     } while (!terminate);
+}
+
+static void bus_buffering(GstBus *_gstBus, GstMessage *_gstMessage, GSTWBus *bus)
+{
+    GSTWMessage *message = new GSTWMessage(_gstMessage, false);
+
+    bus->HandleBuffering(message);
+
+    delete message;
+}
+
+static void bus_clocklost(GstBus *_gstBus, GstMessage *_gstMessage, GSTWBus *bus)
+{
+    GSTWMessage *message = new GSTWMessage(_gstMessage, false);
+
+    bus->HandleBuffering(message);
+
+    delete message;
 }
 
 static void bus_error(GstBus *_gstBus, GstMessage *_gstMessage, GSTWBus *bus)
@@ -237,6 +293,16 @@ void GSTWBusMessageHandler::HandleApplication(GstBus *_gstBus, GSTWMessage *mess
     this->OnHandleApplication(_gstBus, message);
 }
 
+void GSTWBusMessageHandler::HandleBuffering(GstBus *_gstBus, GSTWMessage *message)
+{
+    this->OnHandleBuffering(_gstBus, message);
+}
+
+void GSTWBusMessageHandler::HandleClockLost(GstBus *_gstBus, GSTWMessage *message)
+{
+    this->OnHandleClockLost(_gstBus, message);
+}
+
 void GSTWBusMessageHandler::HandleTimeout()
 {
     this->OnHandleTimeout();
@@ -264,6 +330,14 @@ void GSTWBusMessageHandler::OnHandleEOS(GstBus *_gstBus, GSTWMessage *message)
 }
 
 void GSTWBusMessageHandler::OnHandleApplication(GstBus *_gstBus, GSTWMessage *message)
+{
+}
+
+void GSTWBusMessageHandler::OnHandleClockLost(GstBus *_gstBus, GSTWMessage *message)
+{
+}
+
+void GSTWBusMessageHandler::OnHandleBuffering(GstBus *_gstBus, GSTWMessage *message)
 {
 }
 

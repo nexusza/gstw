@@ -16,6 +16,8 @@ protected:
     virtual void OnHandleOther(GstBus *_gstBus, GSTWMessage *message);
     virtual void OnHandleDurationChange(GstBus *_gstBus, GSTWMessage *message);
     virtual void OnHandleApplication(GstBus *_gstBus, GSTWMessage *message);
+    virtual void OnHandleBuffering(GstBus *_gstBus, GSTWMessage *message);
+    virtual void OnHandleClockLost(GstBus *_gstBus, GSTWMessage *message);
     virtual void OnHandleTimeout();
 
 public:
@@ -28,6 +30,8 @@ public:
     void HandleOther(GstBus *_gstBus, GSTWMessage *message);
     void HandleDurationChange(GstBus *_gstBus, GSTWMessage *message);
     void HandleApplication(GstBus *_gstBus, GSTWMessage *message);
+    void HandleBuffering(GstBus *_gstBus, GSTWMessage *message);
+    void HandleClockLost(GstBus *_gstBus, GSTWMessage *message);
     void HandleTimeout();
 };
 
@@ -57,6 +61,8 @@ public:
     void HandleOther(GSTWMessage *message);
     void HandleDurationChange(GSTWMessage *message);
     void HandleApplication(GSTWMessage *message);
+    void HandleBuffering(GSTWMessage *message);
+    void HandleClockLost(GSTWMessage *message);
     void HandleTimeout();
 };
 
@@ -64,5 +70,7 @@ static void bus_error(GstBus *_gstBus, GstMessage *_gstMessage, GSTWBus *bus);
 static void bus_eos(GstBus *_gstBus, GstMessage *_gstMessage, GSTWBus *bus);
 static void bus_state_changed(GstBus *_gstBus, GstMessage *_gstMessage, GSTWBus *bus);
 static void bus_application(GstBus *_gstBus, GstMessage *_gstMessage, GSTWBus *bus);
+static void bus_buffering(GstBus *_gstBus, GstMessage *_gstMessage, GSTWBus *bus);
+static void bus_clocklost(GstBus *_gstBus, GstMessage *_gstMessage, GSTWBus *bus);
 
 #endif

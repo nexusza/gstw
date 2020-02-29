@@ -17,11 +17,13 @@ public:
     GSTWPipeline(string elementName, string friendlyName);
     ~GSTWPipeline();
     
-    void SetToReadyState();
-    void SetToPlayingState();
-    void SetToPausedState();
-    void SetToNullState();
+    GstStateChangeReturn SetToReadyState();
+    GstStateChangeReturn SetToPlayingState();
+    GstStateChangeReturn SetToPausedState();
+    GstStateChangeReturn SetToNullState();
     GSTWBus* GetBus();
+
+    void ResetClock();
 };
 
 #endif

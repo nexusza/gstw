@@ -1,7 +1,7 @@
 #include "gst/gst.h"
 #include "Message.h"
 
-GSTWMessage::GSTWMessage(GstMessage* message, bool unrefMessage)
+GSTWMessage::GSTWMessage(GstMessage *message, bool unrefMessage)
 {
     this->unrefMessage = unrefMessage;
     this->_GstMessage = message;
@@ -9,11 +9,11 @@ GSTWMessage::GSTWMessage(GstMessage* message, bool unrefMessage)
 
 GSTWMessage::~GSTWMessage()
 {
-    if(this->unrefMessage && this->_GstMessage != nullptr)
+    if (this->unrefMessage && this->_GstMessage != nullptr)
     {
-        gst_message_unref (this->_GstMessage);
+        gst_message_unref(this->_GstMessage);
     }
-    
+
     this->_GstMessage = nullptr;
 }
 
@@ -24,12 +24,12 @@ void GSTWMessage::LoadStateChangedStates()
 
 string GSTWMessage::GetMessageName()
 {
-    return gst_structure_get_name (gst_message_get_structure (this->_GstMessage));
+    return gst_structure_get_name(gst_message_get_structure(this->_GstMessage));
 }
 
-gboolean GSTWMessage::IsForElement(GSTWElement* element)
+gboolean GSTWMessage::IsForElement(GSTWElement *element)
 {
-    return GST_MESSAGE_SRC (this->_GstMessage) == GST_OBJECT (element->_GstElement);
+    return GST_MESSAGE_SRC(this->_GstMessage) == GST_OBJECT(element->_GstElement);
 }
 
 gboolean GSTWMessage::IsInState(GstState state)
@@ -45,4 +45,11 @@ gboolean GSTWMessage::IsPlaying()
 gboolean GSTWMessage::IsPaused()
 {
     return this->IsInState(GstState::GST_STATE_PAUSED);
+}
+
+gint GSTWMessage::ParseBufferingPercentage()
+{
+    gint percent = 0;
+    gst_message_parse_buffering(this->_GstMessage, &percent);
+    return percent;
 }
