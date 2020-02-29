@@ -3,6 +3,7 @@
 
 GSTWMessageLogger::GSTWMessageLogger(/* args */)
 {
+    this->Element = nullptr;
 }
 
 GSTWMessageLogger::GSTWMessageLogger(GSTWElement *element)

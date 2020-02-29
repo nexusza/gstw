@@ -8,6 +8,7 @@ find_package(PkgConfig)
 
 pkg_check_modules(GST REQUIRED IMPORTED_TARGET 
                                                 gstreamer-video-1.0
+                                                gstreamer-audio-1.0
                                                 gstreamer-1.0)
 
 file(GLOB_RECURSE GSTW_SOURCES "src/*.cpp")
