@@ -21,6 +21,8 @@ public:
     GstStateChangeReturn SetToPlayingState();
     GstStateChangeReturn SetToPausedState();
     GstStateChangeReturn SetToNullState();
+    GstStateChangeReturn SetToState(GstState state);
+    
     GSTWBus* GetBus();
 
     void ResetClock();

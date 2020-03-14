@@ -202,11 +202,12 @@ static gboolean refresh_ui(MyCustomData *data)
     if (data->state < GST_STATE_PAUSED)
         return TRUE;
 
-    GSTWSeekQuery query;
+    GSTWSeeker query = GSTWSeeker(data->playbin);
+
     /* If we didn't know it yet, query the stream duration */
     if (!GST_CLOCK_TIME_IS_VALID(data->duration))
     {
-        if (!query.QueryDuration(data->playbin->_GstElement, &data->duration))
+        if (!query.QueryDuration(&data->duration))
         {
             g_printerr("Could not query current duration.\n");
         }
@@ -217,7 +218,7 @@ static gboolean refresh_ui(MyCustomData *data)
         }
     }
 
-    if (query.QueryCurrent(data->playbin->_GstElement, &current))
+    if (query.QueryPosition(&current))
     {
         /* Block the "value-changed" signal, so the slider_cb function is not called
      * (which would trigger a seek the user has not requested) */

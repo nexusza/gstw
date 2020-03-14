@@ -49,6 +49,8 @@ public:
     vector<AudioTags> GetAudioTags();
     vector<SubtitleTags> GetSubtitleTags();
     void SetUri(string uri);
+    GSTWElement *GetAudioSink();
+    GSTWElement *GetVideoSink();
     gint GetNumberOfVideoStreams();
     gint GetNumberOfAudioStreams();
     gint GetNumberOfSubtitleStreams();

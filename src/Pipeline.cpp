@@ -36,6 +36,11 @@ GstStateChangeReturn GSTWPipeline::SetToNullState()
     return gst_element_set_state(this->_GstElement, GST_STATE_NULL);
 }
 
+GstStateChangeReturn GSTWPipeline::SetToState(GstState state)
+{
+    return gst_element_set_state(this->_GstElement, state);
+}
+
 
 void GSTWPipeline::ResetClock()
 {

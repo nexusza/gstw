@@ -8,11 +8,24 @@ GSTWElement::GSTWElement(string elementName, string friendlyName)
     this->Factory = new GSTWElementFactory(elementName);
 }
 
+GSTWElement::GSTWElement(GstElement *_gstElement)
+{
+    //note: the factory will actually not work as the element name given here is the friendly name not the factory name
+    //How to get static pads of an unknown element at runtime?
+    this->_GstElement = _gstElement;
+    this->Factory = new GSTWElementFactory(gst_element_get_name(_gstElement));
+}
+
 GSTWElement::~GSTWElement()
 {
     delete this->Factory;
     this->Factory = nullptr;
     this->_GstElement = nullptr;
+}
+
+string GSTWElement::GetName()
+{
+    return gst_element_get_name(this->_GstElement);
 }
 
 void GSTWElement::CreateElement()

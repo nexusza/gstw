@@ -144,6 +144,20 @@ gint GSTWPlayBin::GetNumberOfSubtitleStreams()
     return value;
 }
 
+GSTWElement *GSTWPlayBin::GetAudioSink()
+{
+    GstElement *element;
+    g_object_get(this->_GstElement, "audio-sink", &element, NULL);
+    return new GSTWElement(element);
+}
+
+GSTWElement *GSTWPlayBin::GetVideoSink()
+{
+    GstElement *element;
+    g_object_get(this->_GstElement, "video-sink", &element, NULL);
+    return new GSTWElement(element);
+}
+
 void GSTWPlayBin::OnVideoTagsChanged(GSTWPlayBinTagsChangedEventHandler *handler)
 {
     g_signal_connect(G_OBJECT(this->_GstElement), "video-tags-changed", (GCallback)playbin_tags_changed, handler);

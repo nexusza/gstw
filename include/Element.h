@@ -13,9 +13,11 @@ class GSTWElement
 {
 public:
     GSTWElement(string elementName, string friendlyName);
+    GSTWElement(GstElement *_gstElement);
     ~GSTWElement();
 
     string FriendlyName;
+    string GetName();
     GstElement *_GstElement;
     GSTWElementFactory *Factory;
     virtual void CreateElement();

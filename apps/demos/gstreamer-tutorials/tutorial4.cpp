@@ -43,12 +43,13 @@ void MySeeker::OnHandleStateChanged(GstBus *_gstBus, GSTWMessage *message)
     {
         if (message->IsPlaying())
         {
-            GSTWSeekQuery query;
-            this->CanSeek = query.QueryStartAndEnd(this->Element->_GstElement, &this->Start, &this->End);
+            GSTWSeeker seeker = GSTWSeeker(this->Element);
+
+            this->CanSeek = seeker.QueryStartAndEnd(&this->Start, &this->End);
 
             if(this->CanSeek)
             {
-                query.QueryDuration(this->Element->_GstElement, &this->Duration);
+                seeker.QueryDuration(&this->Duration);
             }
         }
         else
@@ -65,9 +66,9 @@ void MySeeker::OnHandleTimeout()
         return;
     }
 
-    GSTWSeekQuery query;
+    GSTWSeeker query = GSTWSeeker(this->Element);
     gint64 current;
-    query.QueryCurrent(this->Element->_GstElement, &current);
+    query.QueryPosition(&current);
 
     /* Print current position and total duration */
     g_print("Position %" GST_TIME_FORMAT " / %" GST_TIME_FORMAT "\r",
