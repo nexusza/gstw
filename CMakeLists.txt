@@ -25,4 +25,5 @@ list(REMOVE_DUPLICATES GSTW_INCLUDE_DIRS)
 
 add_subdirectory("apps")
 add_subdirectory("apps/demos")
+add_subdirectory("apps/demos/nvidia")
 add_subdirectory("apps/demos/gstreamer-tutorials")

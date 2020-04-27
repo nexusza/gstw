@@ -14,14 +14,20 @@
 
 #include "StaticPad.h"
 #include "RequestPad.h"
+#include "CapsFilter.h"
+
+#include "Nvv4l2Decoder.h"
+#include "Nvv4l2H264Enc.h"
 
 #include "AppSrc.h"
 #include "AppSink.h"
 
 #include "PlayBin.h"
+#include "DecodeBin.h"
 #include "CustomPipeline.h"
 #include "Tee.h"
 #include "Queue.h"
+#include "H264Parse.h"
 
 #include "UriDecodeBin.h"
 
@@ -30,6 +36,8 @@
 #include "UdpSrc.h"
 #include "UdpSrc.h"
 #include "X264Enc.h"
+#include "SoupHttpSrc.h"
+#include "QtDemux.h"
 
 #include "VideoTestSrc.h"
 #include "AutoVideoSink.h"

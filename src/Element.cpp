@@ -47,7 +47,7 @@ void GSTWElement::AutoLinkElement(GSTWElement *element)
 {
     if (gst_element_link(this->_GstElement, element->_GstElement) != TRUE)
     {
-        g_printerr("Elements could not be linked.\n");
+        g_print("Element '%s' could not be linked to '%s'.\n", this->FriendlyName.c_str(), element->FriendlyName.c_str());
     }
 }
 

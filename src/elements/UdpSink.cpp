@@ -14,7 +14,7 @@ void GSTWUdpSink::SetPort(gint value)
     g_object_set (this->_GstElement, "port", value, NULL);
 }
 
-void GSTWUdpSink::SetUri(string value)
+void GSTWUdpSink::SetHost(string value)
 {
-    g_object_set (this->_GstElement, "uri", value.c_str(), NULL);
+    g_object_set (this->_GstElement, "host", value.c_str(), NULL);
 }

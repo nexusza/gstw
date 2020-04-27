@@ -13,7 +13,7 @@ public:
     GSTWUdpSink(string friendlyName);
     ~GSTWUdpSink();
     void SetPort(gint value);
-    void SetUri(string value);
+    void SetHost(string value);
 };
 
 #endif
