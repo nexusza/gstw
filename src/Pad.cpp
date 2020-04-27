@@ -42,7 +42,7 @@ void GSTWPad::LinkPad(GSTWPad *pad)
     }
 }
 
-void GSTWPad::LinkSourcePad(GstElement *_gstSourceElement, GstPad *_gstSourcePad)
+void GSTWPad::LinkSourcePad(GstElement *_gstSourceElement, GstPad *_gstSourcePad, string padType)
 {
     GstPadLinkReturn ret;
     GstCaps *new_pad_caps = NULL;
@@ -62,9 +62,9 @@ void GSTWPad::LinkSourcePad(GstElement *_gstSourceElement, GstPad *_gstSourcePad
     new_pad_caps = gst_pad_get_current_caps(_gstSourcePad);
     new_pad_struct = gst_caps_get_structure(new_pad_caps, 0);
     new_pad_type = gst_structure_get_name(new_pad_struct);
-    if (!g_str_has_prefix(new_pad_type, "audio/x-raw"))
+    if (!g_str_has_prefix(new_pad_type, padType.c_str()))
     {
-        g_print("It has type '%s' which is not raw audio. Ignoring.\n", new_pad_type);
+        g_print("It has type '%s' which is not '%s'. Ignoring.\n", new_pad_type, padType.c_str());
         goto exit;
     }
 

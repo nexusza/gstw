@@ -7,6 +7,7 @@ set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 find_package(PkgConfig)
 
 pkg_check_modules(GST REQUIRED IMPORTED_TARGET 
+                                                gstreamer-rtsp-server-1.0
                                                 gstreamer-video-1.0
                                                 gstreamer-audio-1.0
                                                 gstreamer-pbutils-1.0
@@ -22,4 +23,6 @@ foreach (_headerFile ${GSTW_HEADERS})
 endforeach()
 list(REMOVE_DUPLICATES GSTW_INCLUDE_DIRS)
 
+add_subdirectory("apps")
+add_subdirectory("apps/demos")
 add_subdirectory("apps/demos/gstreamer-tutorials")

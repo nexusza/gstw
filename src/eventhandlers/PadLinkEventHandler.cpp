@@ -13,16 +13,30 @@ GSTWPadLinkEventHandler::~GSTWPadLinkEventHandler()
     this->Target = nullptr;
 }
 
-void GSTWPadLinkEventHandler::ConnectToPadAddedSignal(GSTWElement *source)
+void GSTWPadLinkEventHandler::ConnectToPadAddedSignalAudio(GSTWElement *source)
 {
-    g_signal_connect(source->_GstElement, "pad-added", G_CALLBACK (gstw_pad_added_event), this);
+    g_signal_connect(source->_GstElement, "pad-added", G_CALLBACK(gstw_pad_added_event_audio), this);
 }
 
-static void gstw_pad_added_event (GstElement *src, GstPad *new_pad, GSTWPadLinkEventHandler *data)
+void GSTWPadLinkEventHandler::ConnectToPadAddedSignalVideo(GSTWElement *source)
 {
-    GSTWStaticPad* sinkPad = data->Target->GetSinkPad();
+    g_signal_connect(source->_GstElement, "pad-added", G_CALLBACK(gstw_pad_added_event_video), this);
+}
 
-    sinkPad->LinkSourcePad(src, new_pad);
+static void gstw_pad_added_event_audio(GstElement *src, GstPad *new_pad, GSTWPadLinkEventHandler *data)
+{
+    GSTWStaticPad *sinkPad = data->Target->GetSinkPad();
+
+    sinkPad->LinkSourcePad(src, new_pad, "audio/x-raw");
+
+    delete sinkPad;
+}
+
+static void gstw_pad_added_event_video(GstElement *src, GstPad *new_pad, GSTWPadLinkEventHandler *data)
+{
+    GSTWStaticPad *sinkPad = data->Target->GetSinkPad();
+
+    sinkPad->LinkSourcePad(src, new_pad, "video/x-raw");
 
     delete sinkPad;
 }

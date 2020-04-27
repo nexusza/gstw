@@ -25,7 +25,7 @@ int main (int argc, char *argv[])
     
     source->SetUri("https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm");
 
-    padAdded->ConnectToPadAddedSignal(source);
+    padAdded->ConnectToPadAddedSignalAudio(source);
 
     pipeline->SetToPlayingState();
 

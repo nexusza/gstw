@@ -11,11 +11,13 @@ public:
     GSTWPadLinkEventHandler(GSTWElement *target);
     ~GSTWPadLinkEventHandler();
 
-    void ConnectToPadAddedSignal(GSTWElement *source);
+    void ConnectToPadAddedSignalAudio(GSTWElement *source);
+    void ConnectToPadAddedSignalVideo(GSTWElement *source);
 
     GSTWElement *Target;
 };
 
-static void gstw_pad_added_event (GstElement *src, GstPad *pad, GSTWPadLinkEventHandler *data);
+static void gstw_pad_added_event_audio(GstElement *src, GstPad *pad, GSTWPadLinkEventHandler *data);
+static void gstw_pad_added_event_video(GstElement *src, GstPad *pad, GSTWPadLinkEventHandler *data);
 
 #endif

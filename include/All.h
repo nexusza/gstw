@@ -25,6 +25,12 @@
 
 #include "UriDecodeBin.h"
 
+#include "Rtph264Pay.h"
+#include "UdpSink.h"
+#include "UdpSrc.h"
+#include "UdpSrc.h"
+#include "X264Enc.h"
+
 #include "VideoTestSrc.h"
 #include "AutoVideoSink.h"
 #include "VideoConvert.h"
