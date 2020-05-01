@@ -17,7 +17,7 @@ public:
     string PadName;
     GstPad* _GstPad;
     bool GetCapabilities(GSTWCapabilities **capabilities);
-    void LinkSourcePad(GstElement* _gstSourceElement, GstPad* _gstSourcePad, string padType);
+    void LinkSourcePad(GstElement* _gstSourceElement, GstPad* _gstSourcePad, string targetElementName, string padType);
     void LinkPad(GSTWPad *pad);
 };
 

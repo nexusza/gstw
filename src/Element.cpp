@@ -45,9 +45,12 @@ void GSTWElement::SendApplicationMessage(string messageName)
 
 void GSTWElement::AutoLinkElement(GSTWElement *element)
 {
-    if (gst_element_link(this->_GstElement, element->_GstElement) != TRUE)
+    if(element->_GstElement != nullptr)
     {
-        g_print("Element '%s' could not be linked to '%s'.\n", this->FriendlyName.c_str(), element->FriendlyName.c_str());
+        if (gst_element_link(this->_GstElement, element->_GstElement) != TRUE)
+        {
+            g_print("Element '%s' could not be linked to '%s'.\n", this->FriendlyName.c_str(), element->FriendlyName.c_str());
+        }
     }
 }
 

@@ -24,3 +24,11 @@ dot -Tpdf result.dot > result.pdf
 
 cmake kit path
 https://vector-of-bool.github.io/docs/vscode-cmake-tools/kits.html
+
+JETSON
+udp example
+    on jetson
+    gst-launch-1.0 souphttpsrc location=http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4 ! qtdemux ! queue ! h264parse ! nvv4l2decoder ! 'video/x-raw(memory:NVMM), width=(int)1280, height=(int)720, format=(string)NV12, framerate=(fraction)24/1' ! nvv4l2h264enc ! rtph264pay ! udpsink host=192.168.1.50 port=5000
+
+    on host:
+    gst-launch-1.0 udpsrc port=5000 ! application/x-rtp ! rtph264depay ! decodebin ! videoconvert ! autovideosink
