@@ -8,6 +8,7 @@
 #include "Pipeline.h"
 #include "MessageLogger.h"
 #include "Pad.h"
+#include "PadProbeHandler.h"
 #include "PadLinkEventHandler.h"
 
 #include "AudioInfo.h"
@@ -18,6 +19,10 @@
 
 #include "Nvv4l2Decoder.h"
 #include "Nvv4l2H264Enc.h"
+#include "NvStreamMux.h"
+#include "NvVideoConvert.h"
+#include "NvInfer.h"
+#include "NvDsosd.h"
 
 #include "AppSrc.h"
 #include "AppSink.h"
@@ -34,7 +39,7 @@
 #include "Rtph264Pay.h"
 #include "UdpSink.h"
 #include "UdpSrc.h"
-#include "UdpSrc.h"
+#include "FileSrc.h"
 #include "X264Enc.h"
 #include "SoupHttpSrc.h"
 #include "QtDemux.h"

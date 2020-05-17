@@ -43,7 +43,7 @@ void GSTWElement::SendApplicationMessage(string messageName)
                                                          gst_structure_new_empty(messageName.c_str())));
 }
 
-void GSTWElement::AutoLinkElement(GSTWElement *element)
+GSTWElement* GSTWElement::AutoLinkElement(GSTWElement *element)
 {
     if(element->_GstElement != nullptr)
     {
@@ -52,11 +52,18 @@ void GSTWElement::AutoLinkElement(GSTWElement *element)
             g_print("Element '%s' could not be linked to '%s'.\n", this->FriendlyName.c_str(), element->FriendlyName.c_str());
         }
     }
+
+    return element;
 }
 
 GSTWStaticPad *GSTWElement::GetSinkPad()
 {
     return new GSTWStaticPad(this->_GstElement, "sink");
+}
+
+GSTWStaticPad *GSTWElement::GetSrcPad()
+{
+    return new GSTWStaticPad(this->_GstElement, "src");
 }
 
 bool GSTWElement::GetStaticPadTemplates(GSTWStaticPadTemplate **staticTemplate)

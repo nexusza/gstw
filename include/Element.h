@@ -21,8 +21,9 @@ public:
     GstElement *_GstElement;
     GSTWElementFactory *Factory;
     virtual void CreateElement();
-    void AutoLinkElement(GSTWElement *element);
+    GSTWElement *AutoLinkElement(GSTWElement *element);
     GSTWStaticPad *GetSinkPad();
+    GSTWStaticPad *GetSrcPad();
     void SendApplicationMessage(string messageName);
     bool GetStaticPadTemplates(GSTWStaticPadTemplate** staticTemplate);
 };

@@ -32,3 +32,11 @@ udp example
 
     on host:
     gst-launch-1.0 udpsrc port=5000 ! application/x-rtp ! rtph264depay ! decodebin ! videoconvert ! autovideosink
+
+Deapstream tutorials link
+https://github.com/Kwull/deepstream-4.0.1
+
+
+
+Shortcuts:
+cd build/apps/demos/nvidia/deepstreamsdk
