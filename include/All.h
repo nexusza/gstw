@@ -23,6 +23,7 @@
 #include "NvVideoConvert.h"
 #include "NvInfer.h"
 #include "NvDsosd.h"
+#include "NvTracker.h"
 
 #include "AppSrc.h"
 #include "AppSink.h"

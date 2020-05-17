@@ -23,3 +23,4 @@ function(add_demo demo_name)
 endfunction()
 
 add_demo("nvidiatest1")
+add_demo("nvidiatest2")
