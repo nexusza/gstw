@@ -11,7 +11,6 @@ int main (int argc, char *argv[])
     GSTWAudioConvert* convert = new GSTWAudioConvert("convert");
     GSTWAudioResample* resample = new GSTWAudioResample("resample");
     GSTWAutoAudioSink* sink = new GSTWAutoAudioSink("sink");
-    GSTWPadLinkEventHandler* padAdded = new GSTWPadLinkEventHandler(convert);
 
     pipeline->CreateElement();
 
@@ -25,7 +24,13 @@ int main (int argc, char *argv[])
     
     source->SetUri("https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm");
 
-    padAdded->ConnectToPadAddedSignalAudio(source);
+    GSTWAudioPadFilter* audioFilter = new GSTWAudioPadFilter();
+
+    GSTWLinkToSinkPadSignalHandler* audioHandler = new GSTWLinkToSinkPadSignalHandler(convert);
+
+    audioHandler->UsePadFilter(audioFilter);
+
+    source->ConnectToPadAddedSignal(audioHandler);
 
     pipeline->SetToPlayingState();
 
@@ -41,7 +46,6 @@ int main (int argc, char *argv[])
     delete convert;
     delete resample;
     delete sink;
-    delete padAdded;
     delete pipeline;
 
     return 0;

@@ -10,16 +10,22 @@ GSTWElement::GSTWElement(string elementName, string friendlyName)
 
 GSTWElement::GSTWElement(GstElement *_gstElement)
 {
+    
+    this->_GstElement = _gstElement;
     //note: the factory will actually not work as the element name given here is the friendly name not the factory name
     //How to get static pads of an unknown element at runtime?
-    this->_GstElement = _gstElement;
-    this->Factory = new GSTWElementFactory(gst_element_get_name(_gstElement));
+    //this->Factory = new GSTWElementFactory(gst_element_get_name(_gstElement));
+    this->Factory = nullptr;
 }
 
 GSTWElement::~GSTWElement()
 {
-    delete this->Factory;
-    this->Factory = nullptr;
+    if(this->Factory != nullptr)
+    {
+        delete this->Factory;
+        this->Factory = nullptr;
+    }
+    
     this->_GstElement = nullptr;
 }
 
@@ -68,5 +74,60 @@ GSTWStaticPad *GSTWElement::GetSrcPad()
 
 bool GSTWElement::GetStaticPadTemplates(GSTWStaticPadTemplate **staticTemplate)
 {
+    if(this->Factory == nullptr)
+    {
+        return false;
+    }
+
     return this->Factory->GetStaticPadTemplates(staticTemplate);
+}
+
+void GSTWElement::ConnectToPadAddedSignal(GSTWPadAddedSignalHandler* handler)
+{
+    g_signal_connect(this->_GstElement, "pad-added", G_CALLBACK(gstw_pad_added_event), handler);
+}
+
+GSTWPadAddedSignalHandler::GSTWPadAddedSignalHandler()
+{
+    this->padFilter = nullptr;
+}
+
+GSTWPadAddedSignalHandler::~GSTWPadAddedSignalHandler()
+{
+    if(this->padFilter != nullptr)
+    {
+        delete this->padFilter;
+        this->padFilter = nullptr;
+    }
+}
+
+void GSTWPadAddedSignalHandler::UsePadFilter(GSTWPadFilter* padFilter)
+{
+    this->padFilter = padFilter;
+}
+
+void GSTWPadAddedSignalHandler::HandlePadAddedSignal(GstElement *gstElement, GstPad *gstPad)
+{
+    GSTWElement* element = new GSTWElement(gstElement);
+    GSTWDynamicPad* pad = new GSTWDynamicPad(gstPad);
+
+    if(this->padFilter != nullptr)
+    {
+        if(this->padFilter->Satisfies(pad))
+        {
+            this->OnHandlePadAddedSignal(element, pad);   
+        }
+    }
+    else
+    {
+        this->OnHandlePadAddedSignal(element, pad);
+    }
+    
+    delete pad;
+    delete element;
+}
+
+static void gstw_pad_added_event(GstElement *element, GstPad *pad, GSTWPadAddedSignalHandler *handler)
+{
+    handler->HandlePadAddedSignal(element, pad);
 }

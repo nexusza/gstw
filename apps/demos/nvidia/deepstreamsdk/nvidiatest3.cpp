@@ -3,37 +3,43 @@
 #include "gstnvdsmeta.h"
 
 /*
-It is meant for simple demonstration of how to use the various DeepStream SDK
-elements in the pipeline and extract meaningful insights from a video stream.
+This sample builds on top of the deepstream-test1 sample to demonstrate how to:
 
-This sample creates multiple instances of "nvinfer" element. Each instance of
-the "nvinfer" uses TensorRT API to infer on frames/objects. Every
-instance is configured through its respective config file. Using a correct
-configuration for a nvinfer element instance is therefore very important as
-considerable behaviors of the instance are parameterized through these configs.
+* Use multiple sources in the pipeline.
+* Use a uridecodebin so that any type of input (e.g. RTSP/File), any GStreamer
+  supported container format, and any codec can be used as input.
+* Configure the stream-muxer to generate a batch of frames and infer on the
+  batch for better resource utilization.
+* Extract the stream metadata, which contains useful information about the
+  frames in the batched buffer.
 
-For reference, here are the config files used for this sample :
-1. The 4-class detector (referred to as pgie in this sample) uses
-    dstest2_pgie_config.txt
-2. The vehicle color classifier (referred to as sgie1 in this sample) uses
-    dstest2_sgie1_config.txt
-3. The vehicle make classifier (referred to as sgie2 in this sample) uses
-    dstest2_sgie2_config.txt
-4. The vehicle type classifier (referred to as sgie3 in this sample) uses
-    dstest2_sgie3_config.txt
-5. The tracker (referred to as nvtracker in this sample) uses
-    dstest2_tracker_config.txt
+Refer to the deepstream-test1 sample documentation for an example of simple
+single-stream inference, bounding-box overlay, and rendering.
 
-In this sample, we first create one instance of "nvinfer", referred as the pgie.
-This is our 4 class detector and it detects for "Vehicle , RoadSign, TwoWheeler,
-Person". After this we link a "nvtracker" instance which tracks the objects
-detected by the pgie. After this we create 3 more instances of "nvinfer"
-referred to as sgie1, sgie2, sgie3 respectively.
-Each of the nvinfer elements attach some MetaData to the buffer. By attaching
-the probe function at the end of the pipeline, one can extract meaningful
-information from these inferences. Please refer the "osd_sink_pad_buffer_probe"
-function in the sample code. For details on the Metadata format, refer to the
-file "gstnvdsmeta.h"
+This sample accepts one or more H.264/H.265 video streams as input. It creates
+a source bin for each input and connects the bins to an instance of the
+"nvstreammux" element, which forms the batch of frames. The batch of
+frames is fed to "nvinfer" for batched inferencing. The batched buffer is
+composited into a 2D tile array using "nvmultistreamtiler." The rest of the
+pipeline is similar to the deepstream-test1 sample.
+
+The "width" and "height" properties must be set on the stream-muxer to set the
+output resolution. If the input frame resolution is different from
+stream-muxer's "width" and "height", the input frame will be scaled to muxer's
+output resolution.
+
+The stream-muxer waits for a user-defined timeout before forming the batch. The
+timeout is set using the "batched-push-timeout" property. If the complete batch
+is formed before the timeout is reached, the batch is pushed to the downstream
+element. If the timeout is reached before the complete batch can be formed
+(which can happen in case of rtsp sources), the batch is formed from the
+available input buffers and pushed. Ideally, the timeout of the stream-muxer
+should be set based on the framerate of the fastest source. It can also be set
+to -1 to make the stream-muxer wait infinitely.
+
+The "nvmultistreamtiler" composite streams based on their stream-ids in
+row-major order (starting from stream 0, left to right across the top row, then
+across the next row, etc.).
 */
 
 #define MAX_DISPLAY_LEN 64
@@ -120,9 +126,9 @@ class HandlePadProbe : public GSTWPadProbeHandler
 
         nvds_add_display_meta_to_frame(frame_meta, display_meta);
     }
-    //g_print ("Frame Number = %d Number of objects = %d "
-    //        "Vehicle Count = %d Person Count = %d\n",
-    //        frame_number, num_rects, vehicle_count, person_count);
+    g_print ("Frame Number = %d Number of objects = %d "
+            "Vehicle Count = %d Person Count = %d\n",
+            frame_number, num_rects, vehicle_count, person_count);
     frame_number++;
     }
 };
@@ -141,10 +147,6 @@ int main(int argc, char *argv[])
     GSTWNvv4l2Decoder *decode = new GSTWNvv4l2Decoder("decode");
     GSTWNvStreamMux *mux = new GSTWNvStreamMux("mux");
     GSTWNvInfer *pgie = new GSTWNvInfer("infer");
-    GSTWNvInfer *s1gie = new GSTWNvInfer("infers1");
-    GSTWNvInfer *s2gie = new GSTWNvInfer("infers2");
-    GSTWNvInfer *s3gie = new GSTWNvInfer("infers3");
-    GSTWNvTracker *tracker = new GSTWNvTracker("tracker");
     GSTWNvDsosd *osd = new GSTWNvDsosd("osd");
     GSTWNvVideoConvert *convert = new GSTWNvVideoConvert("convert");
     GSTWNvVideoConvert *convertosd = new GSTWNvVideoConvert("convertosd");
@@ -162,10 +164,6 @@ int main(int argc, char *argv[])
     pipeline->AddElement(decode);
     pipeline->AddElement(mux);
     pipeline->AddElement(pgie);
-    pipeline->AddElement(tracker);
-    pipeline->AddElement(s1gie);
-    pipeline->AddElement(s2gie);
-    pipeline->AddElement(s3gie);
     pipeline->AddElement(convert);
     pipeline->AddElement(osd);
     pipeline->AddElement(convertosd);
@@ -174,20 +172,7 @@ int main(int argc, char *argv[])
     pipeline->AddElement(payload);
     pipeline->AddElement(udp);
    
-    pgie->SetConfigFilePath("/home/nanonexusza/Development/git/gstw/apps/demos/nvidia/deepstreamsdk/config/nvidiatest2.txt");
-    s1gie->SetConfigFilePath("/home/nanonexusza/Development/git/gstw/apps/demos/nvidia/deepstreamsdk/config/nvidiatest21.txt");
-    s2gie->SetConfigFilePath("/home/nanonexusza/Development/git/gstw/apps/demos/nvidia/deepstreamsdk/config/nvidiatest22.txt");
-    s3gie->SetConfigFilePath("/home/nanonexusza/Development/git/gstw/apps/demos/nvidia/deepstreamsdk/config/nvidiatest23.txt");
-
-    //hardcoded. actually from tracker.txt
-    tracker->SetWidth(640);
-    tracker->SetHeight(480);
-    tracker->SetGpuId(0);
-    tracker->SetLLConfigFile("/home/nanonexusza/Development/git/gstw/apps/demos/nvidia/deepstreamsdk/config/nvidiatest2tracker.yaml");
-
-    //tracker->SetLLLibFile("/opt/nvidia/deepstream/deepstream-4.0/lib/libnvds_mot_klt.so");
-    tracker->SetLLLibFile("/opt/nvidia/deepstream/deepstream-4.0/lib/libnvds_nvdcf.so");
-    tracker->SetEnableBatchProcessing(true);
+    pgie->SetConfigFilePath("/home/nanonexusza/Development/git/gstw/apps/demos/nvidia/deepstreamsdk/config/nvidiatest1.txt");
 
     GSTWStaticPad* decodeSrc = decode->GetSrcPad();
     GSTWRequestPad *muxRequestPad = mux->GetRequestPad();
@@ -202,10 +187,6 @@ int main(int argc, char *argv[])
 
     mux
     ->AutoLinkElement(pgie)
-    ->AutoLinkElement(tracker)
-    ->AutoLinkElement(s1gie)
-    ->AutoLinkElement(s2gie)
-    ->AutoLinkElement(s3gie)
     ->AutoLinkElement(convert)
     ->AutoLinkElement(osd)
     ->AutoLinkElement(convertosd)

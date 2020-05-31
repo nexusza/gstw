@@ -1,5 +1,4 @@
 #include "Element.h"
-#include "PadLinkEventHandler.h"
 
 #ifndef GSTWQTDEMUX_H
 #define GSTWQTDEMUX_H
@@ -11,8 +10,6 @@ private:
 public:
     GSTWQtDemux(string friendlyName);
     ~GSTWQtDemux();
-
-    GSTWPadLinkEventHandler* RegisterVideoPad(GSTWElement* element);
 };
 
 #endif

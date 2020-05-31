@@ -11,10 +11,10 @@ int main(int argc, char *argv[])
     GSTWUriDecodeBin *source = new GSTWUriDecodeBin("uridecode");
     GSTWVideoConvert *convert = new GSTWVideoConvert("videoconvert");
     GSTWX264Enc *encode = new GSTWX264Enc("encode");
+    
     GSTWRtph264Pay *payload = new GSTWRtph264Pay("rtppayload");
     GSTWUdpSink *udp = new GSTWUdpSink("udpsink");
-    GSTWPadLinkEventHandler* padAdded = new GSTWPadLinkEventHandler(convert);
-
+    
     pipeline->CreateElement();
 
     pipeline->AddElement(source);
@@ -31,7 +31,13 @@ int main(int argc, char *argv[])
     //http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4
     source->SetUri("file:///home/nexusza/Downloads/BigBuckBunny.mp4");
 
-    padAdded->ConnectToPadAddedSignalVideo(source);
+    GSTWVideoPadFilter* videoFilter = new GSTWVideoPadFilter();
+
+    GSTWLinkToSinkPadSignalHandler* videoHandler = new GSTWLinkToSinkPadSignalHandler(convert);
+
+    videoHandler->UsePadFilter(videoFilter);
+
+    source->ConnectToPadAddedSignal(videoHandler);
 
     udp->SetPort(1234);
 

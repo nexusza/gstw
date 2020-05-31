@@ -9,12 +9,14 @@
 #include "MessageLogger.h"
 #include "Pad.h"
 #include "PadProbeHandler.h"
-#include "PadLinkEventHandler.h"
+#include "LinkToSinkPadSignalHandler.h"
 
 #include "AudioInfo.h"
 
 #include "StaticPad.h"
 #include "RequestPad.h"
+#include "DynamicPad.h"
+#include "PadFilter.h"
 #include "CapsFilter.h"
 
 #include "Nvv4l2Decoder.h"
@@ -30,6 +32,7 @@
 
 #include "PlayBin.h"
 #include "DecodeBin.h"
+#include "CustomBin.h"
 #include "CustomPipeline.h"
 #include "Tee.h"
 #include "Queue.h"

@@ -116,7 +116,7 @@ static void print_pad_capabilities(GSTWPad *pad)
 
     if (pad->GetCapabilities(&caps))
     {
-        g_print("Caps for the %s pad:\n", pad->PadName.c_str());
+        g_print("Caps for the %s pad:\n", pad->GetPadName().c_str());
 
         print_caps(caps, "      ");
 

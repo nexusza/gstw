@@ -1,12 +1,14 @@
 #include "StaticPad.h"
 
-GSTWStaticPad::GSTWStaticPad(GstElement* _gstElement, string padName) : GSTWPad(padName)
+GSTWStaticPad::GSTWStaticPad(GstElement* _gstElement, string padName) : GSTWPad()
 {
-    this->_GstPad = gst_element_get_static_pad(_gstElement, PadName.c_str());
+    this->_GstPad = gst_element_get_static_pad(_gstElement, padName.c_str());
 }
 
 GSTWStaticPad::~GSTWStaticPad()
 {
+    gst_object_unref(this->_GstPad);
+    this->_GstPad = nullptr;
 }
 
 void GSTWStaticPad::Probe(GSTWPadProbeHandler* handler)

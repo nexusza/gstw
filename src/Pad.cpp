@@ -1,18 +1,40 @@
 #include "Pad.h"
 
-GSTWPad::GSTWPad(string padName)
+GSTWPad::GSTWPad()
 {
-    this->PadName = padName;
-    this->_GstPad = nullptr;
 }
 
 GSTWPad::~GSTWPad()
 {
-    if (this->_GstPad != nullptr)
+    
+}
+
+string GSTWPad::GetPadName()
+{
+    if(this->padName.empty())
     {
-        gst_object_unref(this->_GstPad);
-        this->_GstPad = nullptr;
+        this->padName = GST_PAD_NAME(this->_GstPad);
     }
+
+    return this->padName;
+}
+
+string GSTWPad::GetPadType()
+{
+    if(this->padType.empty())
+    {
+        GstCaps *new_pad_caps = gst_pad_get_current_caps(this->_GstPad);
+
+        GstStructure *new_pad_struct = gst_caps_get_structure(new_pad_caps, 0);
+        
+        string new_pad_type = gst_structure_get_name(new_pad_struct);
+
+        gst_caps_unref(new_pad_caps);
+
+        this->padType = new_pad_type;
+    }
+    
+    return this->padType;
 }
 
 bool GSTWPad::GetCapabilities(GSTWCapabilities **capabilities)
@@ -34,11 +56,22 @@ bool GSTWPad::GetCapabilities(GSTWCapabilities **capabilities)
     return false;
 }
 
+bool GSTWPad::IsLinked()
+{
+    return gst_pad_is_linked(this->_GstPad);
+}
+
 void GSTWPad::LinkPad(GSTWPad *pad)
 {
+    if (this->IsLinked())
+    {
+        g_print("Pad '%s' already linked. Ignoring.\n", this->GetPadName().c_str());
+        return;
+    }
+
     if (gst_pad_link(this->_GstPad, pad->_GstPad) != GST_PAD_LINK_OK)
     {
-        g_printerr("Pad could not be linked.\n");
+        g_printerr("Pad '%s' could not be linked to pad '%s'.\n", this->GetPadName().c_str(), pad->GetPadName().c_str());
     }
 }
 

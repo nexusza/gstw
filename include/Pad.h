@@ -10,15 +10,18 @@ using namespace std;
 class GSTWPad
 {
 private:
-    /* data */
+    string padName;
+    string padType;
 public:
-    GSTWPad(string padName);
+    GSTWPad();
     ~GSTWPad();
-    string PadName;
     GstPad* _GstPad;
     bool GetCapabilities(GSTWCapabilities **capabilities);
     void LinkSourcePad(GstElement* _gstSourceElement, GstPad* _gstSourcePad, string targetElementName, string padType);
     void LinkPad(GSTWPad *pad);
+    bool IsLinked();
+    string GetPadName();
+    string GetPadType();
 };
 
 #endif

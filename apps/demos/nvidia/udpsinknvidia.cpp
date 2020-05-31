@@ -39,7 +39,13 @@ int main(int argc, char *argv[])
     encode->AutoLinkElement(payload);
     payload->AutoLinkElement(udp);
 
-    GSTWPadLinkEventHandler* demuxHandler = demux->RegisterVideoPad(queue);
+    GSTWVideoPadFilter* videoFilter = new GSTWVideoPadFilter();
+
+    GSTWLinkToSinkPadSignalHandler* demuxHandler = new GSTWLinkToSinkPadSignalHandler(queue);
+
+    demuxHandler->UsePadFilter(videoFilter);
+
+    demux->ConnectToPadAddedSignal(demuxHandler);
 
     //http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4
     source->SetLocation("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4");
