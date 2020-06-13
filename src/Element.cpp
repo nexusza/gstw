@@ -1,5 +1,16 @@
 #include "gst/gst.h"
 #include "Element.h"
+#include "format.h"
+
+GSTWSignalHandler::GSTWSignalHandler()
+{
+
+}
+
+GSTWSignalHandler::~GSTWSignalHandler()
+{
+    
+}
 
 GSTWElement::GSTWElement(string elementName, string friendlyName)
 {
@@ -62,14 +73,24 @@ GSTWElement* GSTWElement::AutoLinkElement(GSTWElement *element)
     return element;
 }
 
-GSTWStaticPad *GSTWElement::GetSinkPad()
+GSTWStaticPad *GSTWElement::GetSinkStaticPad()
 {
     return new GSTWStaticPad(this->_GstElement, "sink");
 }
 
-GSTWStaticPad *GSTWElement::GetSrcPad()
+GSTWRequestPad *GSTWElement::GetSinkRequestPad(gint index)
+{
+    return new GSTWRequestPad(this->_GstElement, fmt::format("sink_{0}", index));    
+}
+
+GSTWStaticPad *GSTWElement::GetSrcStaticPad()
 {
     return new GSTWStaticPad(this->_GstElement, "src");
+}
+
+GSTWRequestPad *GSTWElement::GetSrcRequestPad(gint index)
+{
+    return new GSTWRequestPad(this->_GstElement, fmt::format("src_{0}", index));    
 }
 
 bool GSTWElement::GetStaticPadTemplates(GSTWStaticPadTemplate **staticTemplate)
@@ -82,52 +103,7 @@ bool GSTWElement::GetStaticPadTemplates(GSTWStaticPadTemplate **staticTemplate)
     return this->Factory->GetStaticPadTemplates(staticTemplate);
 }
 
-void GSTWElement::ConnectToPadAddedSignal(GSTWPadAddedSignalHandler* handler)
+void GSTWElement::ConnectToSignal(GSTWSignalHandler* handler)
 {
-    g_signal_connect(this->_GstElement, "pad-added", G_CALLBACK(gstw_pad_added_event), handler);
-}
-
-GSTWPadAddedSignalHandler::GSTWPadAddedSignalHandler()
-{
-    this->padFilter = nullptr;
-}
-
-GSTWPadAddedSignalHandler::~GSTWPadAddedSignalHandler()
-{
-    if(this->padFilter != nullptr)
-    {
-        delete this->padFilter;
-        this->padFilter = nullptr;
-    }
-}
-
-void GSTWPadAddedSignalHandler::UsePadFilter(GSTWPadFilter* padFilter)
-{
-    this->padFilter = padFilter;
-}
-
-void GSTWPadAddedSignalHandler::HandlePadAddedSignal(GstElement *gstElement, GstPad *gstPad)
-{
-    GSTWElement* element = new GSTWElement(gstElement);
-    GSTWDynamicPad* pad = new GSTWDynamicPad(gstPad);
-
-    if(this->padFilter != nullptr)
-    {
-        if(this->padFilter->Satisfies(pad))
-        {
-            this->OnHandlePadAddedSignal(element, pad);   
-        }
-    }
-    else
-    {
-        this->OnHandlePadAddedSignal(element, pad);
-    }
-    
-    delete pad;
-    delete element;
-}
-
-static void gstw_pad_added_event(GstElement *element, GstPad *pad, GSTWPadAddedSignalHandler *handler)
-{
-    handler->HandlePadAddedSignal(element, pad);
+    handler->ConnectToSignal(this);
 }

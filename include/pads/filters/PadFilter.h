@@ -3,27 +3,19 @@
 #ifndef GSTWPADFILTER_H
 #define GSTWPADFILTER_H
 
+class GSTWPadFilterType
+{
+public:
+    virtual bool Satisfies(GSTWPad* pad) = 0;
+};
+
 class GSTWPadFilter
 {
 private:
-    string padNameFilter;
-    string padTypeFilter;
+    vector<GSTWPadFilterType*> filters;
 public:
-    void FilterByPadName(string padName);
-    void FilterByPadType(string padType);
+    void AddFilter(GSTWPadFilterType* filter);
     virtual bool Satisfies(GSTWPad* pad);
-};
-
-class GSTWVideoPadFilter : public GSTWPadFilter
-{
-public:
-    GSTWVideoPadFilter();
-};
-
-class GSTWAudioPadFilter : public GSTWPadFilter
-{
-public:
-    GSTWAudioPadFilter();
 };
 
 #endif

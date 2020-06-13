@@ -30,7 +30,7 @@ int main (int argc, char *argv[])
 
     audioHandler->UsePadFilter(audioFilter);
 
-    source->ConnectToPadAddedSignal(audioHandler);
+    source->ConnectToSignal(audioHandler);
 
     pipeline->SetToPlayingState();
 

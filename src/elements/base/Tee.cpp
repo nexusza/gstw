@@ -8,15 +8,10 @@ GSTWTee::~GSTWTee()
 {
 }
 
-GSTWRequestPad* GSTWTee::GetNewSourcePad()
-{
-    return new GSTWRequestPad(this->_GstElement, "src_%u");
-}
-
 GSTWRequestPad* GSTWTee::LinkToElementSinkPad(GSTWElement* element)
 {
-    GSTWRequestPad* requestPad = this->GetNewSourcePad();
-    GSTWStaticPad *sinkPad = element->GetSinkPad();
+    GSTWRequestPad* requestPad = this->GetSrcRequestPad(0);
+    GSTWStaticPad *sinkPad = element->GetSinkStaticPad();
 
     requestPad->LinkPad(sinkPad);
 

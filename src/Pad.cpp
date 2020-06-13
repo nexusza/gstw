@@ -2,11 +2,19 @@
 
 GSTWPad::GSTWPad()
 {
+    this->caps = nullptr;
+    this->padStructure = nullptr;
 }
 
 GSTWPad::~GSTWPad()
 {
+    if(this->caps != nullptr)
+    {
+        gst_caps_unref(this->caps);
+    }
     
+    this->caps = nullptr;
+    this->padStructure = nullptr;
 }
 
 string GSTWPad::GetPadName()
@@ -19,22 +27,41 @@ string GSTWPad::GetPadName()
     return this->padName;
 }
 
+GstCaps* GSTWPad::GetPadCaps()
+{
+    if(this->caps == nullptr)
+    {
+        this->caps = gst_pad_get_current_caps(this->_GstPad);
+    }
+    
+    return this->caps;
+}
+
+GstStructure* GSTWPad::GetCapsStructure()
+{
+    if(this->padStructure == nullptr)
+    {
+        this->padStructure =  gst_caps_get_structure(this->GetPadCaps(), 0);
+    }
+    
+    return this->padStructure;
+}
+
 string GSTWPad::GetPadType()
 {
     if(this->padType.empty())
     {
-        GstCaps *new_pad_caps = gst_pad_get_current_caps(this->_GstPad);
-
-        GstStructure *new_pad_struct = gst_caps_get_structure(new_pad_caps, 0);
-        
-        string new_pad_type = gst_structure_get_name(new_pad_struct);
-
-        gst_caps_unref(new_pad_caps);
-
-        this->padType = new_pad_type;
+        this->padType = gst_structure_get_name(this->GetCapsStructure());
     }
     
     return this->padType;
+}
+
+bool GSTWPad::HasFeature(string feature)
+{
+    GstCapsFeatures *features = gst_caps_get_features (this->GetPadCaps(), 0);
+
+    return gst_caps_features_contains (features, feature.c_str());
 }
 
 bool GSTWPad::GetCapabilities(GSTWCapabilities **capabilities)

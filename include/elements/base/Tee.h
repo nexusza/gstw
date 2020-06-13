@@ -11,7 +11,6 @@ private:
 public:
     GSTWTee(string friendlyName);
     ~GSTWTee();
-    GSTWRequestPad* GetNewSourcePad();
     GSTWRequestPad* LinkToElementSinkPad(GSTWElement* element);
 };
 

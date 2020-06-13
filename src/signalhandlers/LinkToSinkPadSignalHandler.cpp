@@ -15,7 +15,7 @@ void GSTWLinkToSinkPadSignalHandler::OnHandlePadAddedSignal(GSTWElement *element
 {
     if(!pad->IsLinked())
     {
-        GSTWStaticPad *sinkPad = this->element->GetSinkPad();
+        GSTWStaticPad *sinkPad = this->element->GetSinkStaticPad();
 
         pad->LinkPad(sinkPad);
 

@@ -1,4 +1,5 @@
 #include "gst/gst.h"
+#include "Pad.h"
 #include "Bin.h"
 
 #ifndef GSTWCUSTOMBIN_H
@@ -10,6 +11,8 @@ public:
     GSTWCustomBin(string friendlyName);
     ~GSTWCustomBin();
     void CreateElement();
+    void LinkSrcGhostPad(GSTWPad* pad);
+    void AddSrcGhostPad();
 };
 
 #endif

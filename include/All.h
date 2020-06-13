@@ -9,6 +9,8 @@
 #include "MessageLogger.h"
 #include "Pad.h"
 #include "PadProbeHandler.h"
+#include "PadAddedSignalHandler.h"
+#include "ChildAddedSignalHandler.h"
 #include "LinkToSinkPadSignalHandler.h"
 
 #include "AudioInfo.h"
@@ -17,6 +19,11 @@
 #include "RequestPad.h"
 #include "DynamicPad.h"
 #include "PadFilter.h"
+#include "VideoPadFilter.h"
+#include "AudioPadFilter.h"
+#include "PadFeatureFilter.h"
+#include "PadNameFilter.h"
+#include "PadTypeFilter.h"
 #include "CapsFilter.h"
 
 #include "Nvv4l2Decoder.h"
@@ -26,6 +33,7 @@
 #include "NvInfer.h"
 #include "NvDsosd.h"
 #include "NvTracker.h"
+#include "NvMultistreamTiler.h"
 
 #include "AppSrc.h"
 #include "AppSink.h"

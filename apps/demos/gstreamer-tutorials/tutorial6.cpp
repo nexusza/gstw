@@ -22,7 +22,7 @@ public:
     {
         if (message->IsForElement(this->element))
         {
-            GSTWStaticPad *sinkPad = this->element->GetSinkPad();
+            GSTWStaticPad *sinkPad = this->element->GetSinkStaticPad();
 
             print_pad_capabilities(sinkPad);
 

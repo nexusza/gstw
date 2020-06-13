@@ -3,6 +3,11 @@
 GSTWRequestPad::GSTWRequestPad(GstElement* _gstElement, string padName) : GSTWPad()
 {
     this->_GstPad = gst_element_get_request_pad(_gstElement, padName.c_str());
+
+    if (!this->_GstPad) {
+        g_print("Failed to get request pad '%s' for element.\n", padName.c_str());
+    }
+    
     this->_gstElement = _gstElement;
 }
 

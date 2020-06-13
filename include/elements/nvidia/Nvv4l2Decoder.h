@@ -9,7 +9,9 @@ private:
     /* data */
 public:
     GSTWNvv4l2Decoder(string friendlyName);
+    GSTWNvv4l2Decoder(GstElement* _gstElement);
     ~GSTWNvv4l2Decoder();
+    void SetBufApiVersion(gboolean value);
 };
 
 #endif

@@ -1,5 +1,6 @@
 #include "gst/gst.h"
 #include "StaticPad.h"
+#include "RequestPad.h"
 #include "DynamicPad.h"
 #include "PadFilter.h"
 #include "ElementFactory.h"
@@ -13,17 +14,12 @@ using namespace std;
 
 class GSTWElement;
 
-class GSTWPadAddedSignalHandler
+class GSTWSignalHandler
 {
-private:
-    GSTWPadFilter* padFilter;
 public:
-    GSTWPadAddedSignalHandler();
-    ~GSTWPadAddedSignalHandler();
-    void UsePadFilter(GSTWPadFilter* padFilter);
-    void HandlePadAddedSignal(GstElement *element, GstPad* pad);
-protected:
-    virtual void OnHandlePadAddedSignal(GSTWElement *element, GSTWDynamicPad* pad) = 0;
+    GSTWSignalHandler();
+    ~GSTWSignalHandler();
+    virtual void ConnectToSignal(GSTWElement* element) = 0;
 };
 
 class GSTWElement
@@ -39,13 +35,13 @@ public:
     GSTWElementFactory *Factory;
     virtual void CreateElement();
     GSTWElement *AutoLinkElement(GSTWElement *element);
-    GSTWStaticPad *GetSinkPad();
-    GSTWStaticPad *GetSrcPad();
+    GSTWStaticPad *GetSinkStaticPad();
+    GSTWRequestPad *GetSinkRequestPad(gint index);
+    GSTWStaticPad *GetSrcStaticPad();
+    GSTWRequestPad *GetSrcRequestPad(gint index);
     void SendApplicationMessage(string messageName);
     bool GetStaticPadTemplates(GSTWStaticPadTemplate** staticTemplate);
-    void ConnectToPadAddedSignal(GSTWPadAddedSignalHandler* handler);
+    void ConnectToSignal(GSTWSignalHandler* handler);
 };
-
-static void gstw_pad_added_event(GstElement *src, GstPad *new_pad, GSTWPadAddedSignalHandler *handler);
 
 #endif

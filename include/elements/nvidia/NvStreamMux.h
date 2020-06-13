@@ -16,7 +16,6 @@ public:
     void SetHeight(gint value);
     void SetBatchSize(gint value);
     void SetBatchedPushTimeout(gint value);
-    GSTWRequestPad* GetRequestPad();
 };
 
 #endif

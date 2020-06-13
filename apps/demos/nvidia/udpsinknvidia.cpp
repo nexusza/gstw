@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
 
     demuxHandler->UsePadFilter(videoFilter);
 
-    demux->ConnectToPadAddedSignal(demuxHandler);
+    demux->ConnectToSignal(demuxHandler);
 
     //http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4
     source->SetLocation("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4");

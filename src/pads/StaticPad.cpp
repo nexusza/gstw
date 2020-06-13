@@ -3,6 +3,10 @@
 GSTWStaticPad::GSTWStaticPad(GstElement* _gstElement, string padName) : GSTWPad()
 {
     this->_GstPad = gst_element_get_static_pad(_gstElement, padName.c_str());
+
+    if (!this->_GstPad) {
+        g_print("Failed to get static pad '%s' for element.\n", padName.c_str());
+    }
 }
 
 GSTWStaticPad::~GSTWStaticPad()

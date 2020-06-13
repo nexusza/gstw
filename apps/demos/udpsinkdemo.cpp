@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 
     videoHandler->UsePadFilter(videoFilter);
 
-    source->ConnectToPadAddedSignal(videoHandler);
+    source->ConnectToSignal(videoHandler);
 
     udp->SetPort(1234);
 

@@ -12,6 +12,10 @@ class GSTWPad
 private:
     string padName;
     string padType;
+    GstCaps* caps;
+    GstStructure* padStructure;
+    GstCaps* GetPadCaps();
+    GstStructure* GetCapsStructure();
 public:
     GSTWPad();
     ~GSTWPad();
@@ -22,6 +26,7 @@ public:
     bool IsLinked();
     string GetPadName();
     string GetPadType();
+    bool HasFeature(string feature);
 };
 
 #endif

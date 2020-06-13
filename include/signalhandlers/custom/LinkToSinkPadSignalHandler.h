@@ -1,5 +1,6 @@
 #include "gst/gst.h"
 #include "Element.h"
+#include "PadAddedSignalHandler.h"
 
 #ifndef GSTWLINKTOSINKPADSIGNALHANDLER_H
 #define GSTWLINKTOSINKPADSIGNALHANDLER_H

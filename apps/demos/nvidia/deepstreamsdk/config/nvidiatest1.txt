@@ -64,6 +64,7 @@ model-file=/home/nanonexusza/Downloads/deepstream_sdk_v4.0.2_jetson/samples/mode
 proto-file=/home/nanonexusza/Downloads/deepstream_sdk_v4.0.2_jetson/samples/models/Primary_Detector/resnet10.prototxt
 labelfile-path=/home/nanonexusza/Downloads/deepstream_sdk_v4.0.2_jetson/samples/models/Primary_Detector/labels.txt
 int8-calib-file=/home/nanonexusza/Downloads/deepstream_sdk_v4.0.2_jetson/samples/models/Primary_Detector/cal_trt.bin
+model-engine-file=/home/nanonexusza/Downloads/deepstream_sdk_v4.0.2_jetson/samples/models/Primary_Detector/resnet10.caffemodel_b1_fp16.engine
 batch-size=1
 network-mode=1
 num-detected-classes=4

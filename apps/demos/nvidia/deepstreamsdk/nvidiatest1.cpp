@@ -1,5 +1,6 @@
 #include <iostream>
 #include "All.h"
+#include "format.h"
 #include "gstnvdsmeta.h"
 
 /*
@@ -158,8 +159,8 @@ int main(int argc, char *argv[])
    
     pgie->SetConfigFilePath("/home/nanonexusza/Development/git/gstw/apps/demos/nvidia/deepstreamsdk/config/nvidiatest1.txt");
 
-    GSTWStaticPad* decodeSrc = decode->GetSrcPad();
-    GSTWRequestPad *muxRequestPad = mux->GetRequestPad();
+    GSTWStaticPad* decodeSrc = decode->GetSrcStaticPad();
+    GSTWRequestPad *muxRequestPad = mux->GetSinkRequestPad(0);
 
     decodeSrc->LinkPad(muxRequestPad);
 
@@ -179,14 +180,13 @@ int main(int argc, char *argv[])
     ->AutoLinkElement(payload)
     ->AutoLinkElement(udp);  
 
-
     GSTWVideoPadFilter* videoFilter = new GSTWVideoPadFilter();
 
     GSTWLinkToSinkPadSignalHandler* demuxHandler = new GSTWLinkToSinkPadSignalHandler(queue);
 
     demuxHandler->UsePadFilter(videoFilter);
 
-    qtdemux->ConnectToPadAddedSignal(demuxHandler);
+    qtdemux->ConnectToSignal(demuxHandler);
 
     caps->SetCapsFromString("video/x-raw(memory:NVMM), width=(int)1920, height=(int)1080, format=(string)NV12, framerate=(fraction)30/1");
 
@@ -195,7 +195,7 @@ int main(int argc, char *argv[])
     mux->SetBatchSize(1);
     mux->SetBatchedPushTimeout(MUXER_OUTPUT_HEIGHT);
 
-    GSTWStaticPad* osdSinkPad = osd->GetSinkPad();
+    GSTWStaticPad* osdSinkPad = osd->GetSinkStaticPad();
     HandlePadProbe* probe = new HandlePadProbe();
 
     osdSinkPad->Probe(probe);

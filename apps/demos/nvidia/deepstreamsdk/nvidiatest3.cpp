@@ -1,6 +1,8 @@
 #include <iostream>
 #include "All.h"
+#include "format.h"
 #include "gstnvdsmeta.h"
+#include <regex> 
 
 /*
 This sample builds on top of the deepstream-test1 sample to demonstrate how to:
@@ -42,6 +44,9 @@ row-major order (starting from stream 0, left to right across the top row, then
 across the next row, etc.).
 */
 
+#define TILED_OUTPUT_WIDTH 1920
+#define TILED_OUTPUT_HEIGHT 1080
+
 #define MAX_DISPLAY_LEN 64
 
 #define PGIE_CLASS_ID_VEHICLE 0
@@ -56,6 +61,8 @@ across the next row, etc.).
 /* Muxer batch formation timeout, for e.g. 40 millisec. Should ideally be set
  * based on the fastest source's framerate. */
 #define MUXER_BATCH_TIMEOUT_USEC 4000000
+
+#define GST_CAPS_FEATURES_NVMM "memory:NVMM"
 
 ///home/nanonexusza/Downloads/deepstream_sdk_v4.0.2_jetson/samples/streams/sample_1080p_h264.mp4
 
@@ -133,20 +140,63 @@ class HandlePadProbe : public GSTWPadProbeHandler
     }
 };
 
+class GSTWLinkGhostPadSignalHandler : public GSTWPadAddedSignalHandler
+{
+protected:
+    GSTWCustomBin* bin;
+    void OnHandlePadAddedSignal(GSTWElement *element, GSTWDynamicPad* pad)
+    {
+      g_print("Linking ghost pad.\n");
+      bin->LinkSrcGhostPad(pad);
+    }
+public:
+    GSTWLinkGhostPadSignalHandler(GSTWCustomBin* bin)
+    {
+        this->bin = bin;
+
+        GSTWVideoPadFilter* videoFilter = new GSTWVideoPadFilter();
+
+        videoFilter->AddFilter(new GSTWPadFeatureFilter(GST_CAPS_FEATURES_NVMM));
+
+        this->UsePadFilter(videoFilter);
+    }
+};
+
+class SetupBufApiHandler : public GSTWChildAddedSignalHandler
+{
+public:
+    SetupBufApiHandler()
+    {
+      this->AddRegexNameFilter("(decodebin)(.*)");
+      this->AddRegexNameFilter("(nvv4l2decoder)(.*)");
+    }
+    void OnHandleChildAddedSignal(GSTWElement* element, string name)
+    {
+      GSTWNvv4l2Decoder *decoder = new GSTWNvv4l2Decoder(element->_GstElement);
+
+      g_print("Setting buf api version.\n");
+
+      decoder->SetBufApiVersion(true);
+
+      delete decoder;
+    }
+};
+
 int main(int argc, char *argv[])
 {
     /* Initialize GStreamer */
     gst_init(&argc, &argv);
 
+    if(!regex_match("myvalue0", regex("(myvalue)(.*)")))
+    {
+      return false;
+    }
+
     GSTWCustomPipeline *pipeline = new GSTWCustomPipeline("mypipeline");
     GSTWMessageLogger *logger = new GSTWMessageLogger(pipeline);
-    GSTWFileSrc *source = new GSTWFileSrc("httpsource");
-    GSTWQtDemux *qtdemux = new GSTWQtDemux("demux");
-    GSTWQueue *queue = new GSTWQueue("queue");
-    GSTWH264Parse *parse = new GSTWH264Parse("parse");
-    GSTWNvv4l2Decoder *decode = new GSTWNvv4l2Decoder("decode");
     GSTWNvStreamMux *mux = new GSTWNvStreamMux("mux");
     GSTWNvInfer *pgie = new GSTWNvInfer("infer");
+    GSTWNvMultistreamTiler *tiler = new GSTWNvMultistreamTiler("tiler");
     GSTWNvDsosd *osd = new GSTWNvDsosd("osd");
     GSTWNvVideoConvert *convert = new GSTWNvVideoConvert("convert");
     GSTWNvVideoConvert *convertosd = new GSTWNvVideoConvert("convertosd");
@@ -156,14 +206,41 @@ int main(int argc, char *argv[])
     GSTWUdpSink *udp = new GSTWUdpSink("udpsink");
 
     pipeline->CreateElement();
-
-    pipeline->AddElement(source);
-    pipeline->AddElement(qtdemux);
-    pipeline->AddElement(queue);
-    pipeline->AddElement(parse);
-    pipeline->AddElement(decode);
     pipeline->AddElement(mux);
+   
+    //int num_sources = argc - 1;
+    int num_sources = 2;
+    for (int i = 0; i < num_sources; i++) {
+
+        GSTWCustomBin *bin = new GSTWCustomBin(fmt::format("custombin-{0}.", i));
+        GSTWUriDecodeBin *decodebin = new GSTWUriDecodeBin("decodebin");
+
+        pipeline->AddElement(bin);
+
+        bin->AddElement(decodebin);
+
+        bin->AddSrcGhostPad();
+
+        //decodebin->SetUri(argv[i + 1]);
+        decodebin->SetUri("file:///home/nanonexusza/Downloads/deepstream_sdk_v4.0.2_jetson/samples/streams/sample_1080p_h264.mp4");
+
+        GSTWLinkGhostPadSignalHandler* ghostPadHandler = new GSTWLinkGhostPadSignalHandler(bin);
+
+        decodebin->ConnectToSignal(ghostPadHandler);
+
+        SetupBufApiHandler* bufApiHandler = new SetupBufApiHandler();
+        
+        decodebin->ConnectToSignal(bufApiHandler);
+
+        GSTWStaticPad* decodeSrc = bin->GetSrcStaticPad();
+        GSTWRequestPad *requestPad = mux->GetSinkRequestPad(i);
+
+        decodeSrc->LinkPad(requestPad);
+    }
+
+
     pipeline->AddElement(pgie);
+    pipeline->AddElement(tiler);
     pipeline->AddElement(convert);
     pipeline->AddElement(osd);
     pipeline->AddElement(convertosd);
@@ -171,22 +248,12 @@ int main(int argc, char *argv[])
     pipeline->AddElement(encode);
     pipeline->AddElement(payload);
     pipeline->AddElement(udp);
-   
+
     pgie->SetConfigFilePath("/home/nanonexusza/Development/git/gstw/apps/demos/nvidia/deepstreamsdk/config/nvidiatest1.txt");
-
-    GSTWStaticPad* decodeSrc = decode->GetSrcPad();
-    GSTWRequestPad *muxRequestPad = mux->GetRequestPad();
-
-    decodeSrc->LinkPad(muxRequestPad);
-
-    source->AutoLinkElement(qtdemux);
-
-    queue
-    ->AutoLinkElement(parse)
-    ->AutoLinkElement(decode);
 
     mux
     ->AutoLinkElement(pgie)
+    ->AutoLinkElement(tiler)
     ->AutoLinkElement(convert)
     ->AutoLinkElement(osd)
     ->AutoLinkElement(convertosd)
@@ -195,14 +262,6 @@ int main(int argc, char *argv[])
     ->AutoLinkElement(payload)
     ->AutoLinkElement(udp);   
 
-    GSTWVideoPadFilter* videoFilter = new GSTWVideoPadFilter();
-
-    GSTWLinkToSinkPadSignalHandler* demuxHandler = new GSTWLinkToSinkPadSignalHandler(queue);
-
-    demuxHandler->UsePadFilter(videoFilter);
-
-    qtdemux->ConnectToPadAddedSignal(demuxHandler);
-
     caps->SetCapsFromString("video/x-raw(memory:NVMM), width=(int)1920, height=(int)1080, format=(string)NV12, framerate=(fraction)30/1");
 
     mux->SetWidth(MUXER_OUTPUT_WIDTH);
@@ -210,12 +269,16 @@ int main(int argc, char *argv[])
     mux->SetBatchSize(1);
     mux->SetBatchedPushTimeout(MUXER_OUTPUT_HEIGHT);
 
-    GSTWStaticPad* osdSinkPad = osd->GetSinkPad();
+    tiler->SetRowsAndColumns(num_sources);
+    tiler->SetHeight(TILED_OUTPUT_HEIGHT);
+    tiler->SetWidth(TILED_OUTPUT_WIDTH);
+
+    GSTWStaticPad* osdSinkPad = osd->GetSinkStaticPad();
     HandlePadProbe* probe = new HandlePadProbe();
 
     osdSinkPad->Probe(probe);
     
-    source->SetLocation("/home/nanonexusza/Downloads/deepstream_sdk_v4.0.2_jetson/samples/streams/sample_1080p_h264.mp4");
+    //source->SetLocation("/home/nanonexusza/Downloads/deepstream_sdk_v4.0.2_jetson/samples/streams/sample_1080p_h264.mp4");
 
     udp->SetHost("192.168.1.50");
 
